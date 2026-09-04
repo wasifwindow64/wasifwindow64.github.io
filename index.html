@@ -47,6 +47,15 @@
       color: var(--accent);
       text-decoration: none;
       letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .nav-logo img {
+      height: 36px;
+      width: 36px;
+      object-fit: cover;
+      border-radius: 8px;
     }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a {
@@ -118,6 +127,14 @@
       transition: opacity 0.2s, transform 0.2s;
     }
     .hero-cta:hover { opacity: 0.88; transform: translateY(-2px); }
+    .hero-logo {
+      width: 140px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+      border: 2px solid rgba(0,229,255,0.3);
+    }
 
     /* ── GAMES SECTION ── */
     #games {
@@ -313,7 +330,10 @@
 
   <!-- NAV -->
   <nav>
-    <a class="nav-logo" href="#">wasif.games</a>
+    <a class="nav-logo" href="#">
+      <img src="logo.jpg" alt="Wasif Agamer Logo">
+      wasif.games
+    </a>
     <ul class="nav-links">
       <li><a href="#games">Games</a></li>
       <li><a href="#about">About</a></li>
@@ -323,7 +343,8 @@
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-tag">Pakistani game developer</div>
+    <img src="logo.jpg" alt="Wasif Agamer" class="hero-logo">
+    <div class="hero-tag">🇵🇰 Pakistani Game Developer</div>
     <h1>Games made<br>to <span>play right now</span></h1>
     <p class="hero-sub">Simple, fun, free. Two casual games you can enjoy in seconds — no install needed.</p>
     <a class="hero-cta" href="#games">See the games ↓</a>
@@ -389,7 +410,7 @@
       <div class="about-text">
         <p class="section-label">// about me</p>
         <h2 class="section-title" style="margin-bottom:1rem;">Who's making these?</h2>
-        <p>Hi, I'm <strong style="color:var(--white)">Wasif</strong> — an Pakistan game developer who loves building simple, fun games that anyone can pick up and play.</p>
+        <p>Hi, I'm <strong style="color:var(--white)">Wasif</strong> — an indie game developer who loves building simple, fun games that anyone can pick up and play.</p>
         <p>I build my games in Godot and publish them free on itch.io. More games are coming — follow me there to stay updated.</p>
         <a class="btn-primary" style="display:inline-flex; margin-top:1.2rem; width:auto;" href="https://wasif-agamer.itch.io" target="_blank">Visit my itch.io page</a>
       </div>
