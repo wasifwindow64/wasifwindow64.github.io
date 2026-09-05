@@ -535,9 +535,7 @@
       background:#080a0f;
       display:flex;flex-direction:column;
       align-items:center;justify-content:center;
-      transition:opacity 0.7s ease,visibility 0.7s ease;
     }
-    #loader.hide{opacity:0;visibility:hidden;pointer-events:none;}
     .ld-logo{width:120px;height:120px;border-radius:16px;object-fit:cover;border:3px solid #FF4500;box-shadow:0 0 40px rgba(255,69,0,0.6);animation:ldpulse 1s ease-in-out infinite;margin-bottom:1.8rem;}
     .ld-title{font-family:"Bebas Neue",sans-serif;font-size:2.8rem;letter-spacing:0.15em;background:linear-gradient(90deg,#FF4500,#FFD700,#5D9E3A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.4rem;}
     .ld-sub{font-family:"Press Start 2P",monospace;font-size:0.48rem;color:#5D9E3A;margin-bottom:2.2rem;letter-spacing:0.08em;}
@@ -702,14 +700,11 @@
         ldBar.style.width = '100%';
         ldPct.textContent = '100%';
         clearInterval(iv);
-        setTimeout(() => {
-          loader.style.opacity = '0';
-          loader.style.visibility = 'hidden';
-          loader.style.pointerEvents = 'none';
-        }, 600);
+        setTimeout(() => { loader.style.display = 'none'; }, 500);
+      } else {
+        ldBar.style.width = pct + '%';
+        ldPct.textContent = Math.floor(pct) + '%';
       }
-      ldBar.style.width = pct + '%';
-      ldPct.textContent = Math.floor(pct) + '%';
     }, 60);
 
     // CURSOR
