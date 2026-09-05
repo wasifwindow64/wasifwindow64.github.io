@@ -551,24 +551,6 @@
 </head>
 <body>
 
-  <!-- LOADER -->
-  <div id="loader">
-    <img src="logo.jpg" class="loader-logo" alt="Loading">
-    <div class="loader-title">WASIF AGAMER</div>
-    <div class="loader-sub">🇵🇰 Pakistani Game Developer</div>
-    <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
-    <div class="loader-pct" id="loader-pct">0%</div>
-  </div>
-
-  <!-- CUSTOM CURSOR -->
-  <div class="cursor" id="cursor">
-    <div class="cursor-inner"></div>
-    <div class="cursor-line h"></div>
-    <div class="cursor-line v"></div>
-    <div class="cursor-ring"></div>
-  </div>
-  <div class="cursor-trail" id="cursorTrail"></div>
-
 
 
   <!-- LOADER -->
@@ -706,6 +688,13 @@
         ldPct.textContent = Math.floor(pct) + '%';
       }
     }, 60);
+
+
+      // Safety fallback: always remove the loader after 5 seconds.
+      setTimeout(() => {
+        const activeLoader = document.getElementById('loader');
+        if (activeLoader) activeLoader.classList.add('hide');
+      }, 5000);
 
     // CURSOR
     const cur   = document.getElementById('cur');
