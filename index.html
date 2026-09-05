@@ -547,6 +547,85 @@
     /* ── PARTICLES ── */
     .fp{position:fixed;pointer-events:none;z-index:0;animation:frise linear infinite;}
     @keyframes frise{0%{transform:translateY(0) translateX(0) scale(1);opacity:0.8;}50%{transform:translateY(-50vh) translateX(var(--fd)) scale(0.6);opacity:0.5;}100%{transform:translateY(-100vh) translateX(calc(var(--fd)*2)) scale(0.1);opacity:0;}}
+
+    /* ── SCREENSHOTS GALLERY ── */
+    #gallery {
+      padding: 5rem 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      border-top: 1px solid var(--border);
+      position: relative; z-index: 1;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.4rem;
+    }
+    .gallery-item {
+      position: relative;
+      padding: 0;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: none;
+      background: var(--surface);
+      line-height: 0;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .gallery-item:nth-child(odd):hover {
+      border-color: var(--fire);
+      box-shadow: 0 20px 50px rgba(255,69,0,0.25);
+      transform: translateY(-6px) scale(1.02);
+    }
+    .gallery-item:nth-child(even):hover {
+      border-color: var(--mc-green);
+      box-shadow: 0 20px 50px rgba(93,158,58,0.25);
+      transform: translateY(-6px) scale(1.02);
+    }
+    .gallery-item img {
+      width: 100%; height: 200px;
+      object-fit: cover; display: block;
+      image-rendering: pixelated;
+    }
+    .gallery-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 0.6rem 0.8rem;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.5rem;
+      letter-spacing: 0.05em;
+      color: #fff;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      text-align: left;
+    }
+    .gallery-item:nth-child(odd) .gallery-caption  { color: #FF7700; }
+    .gallery-item:nth-child(even) .gallery-caption { color: #8BC34A; }
+
+    .lightbox {
+      position: fixed; inset: 0;
+      background: rgba(8,10,15,0.94);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 999998;
+      padding: 3rem;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 100%; max-height: 88vh;
+      border-radius: 8px;
+      border: 2px solid var(--fire);
+      box-shadow: 0 0 40px rgba(255,69,0,0.4);
+      image-rendering: pixelated;
+    }
+    .lightbox-close {
+      position: absolute; top: 1.5rem; right: 1.8rem;
+      background: none; border: 2px solid var(--mc-green);
+      color: #fff; width: 40px; height: 40px; border-radius: 6px;
+      font-size: 1.2rem; cursor: none;
+    }
+
+    @media (max-width: 640px) {
+      .gallery-item img { height: 160px; }
+    }
   </style>
 </head>
 <body>
@@ -575,6 +654,7 @@
     </a>
     <ul class="nav-links">
       <li><a href="#games">Games</a></li>
+      <li><a href="#gallery">Screenshots</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="https://wasif-agamer.itch.io" target="_blank">Itch.io</a></li>
     </ul>
@@ -642,6 +722,41 @@
 
     </div>
   </section>
+
+  <!-- SCREENSHOTS -->
+  <section id="gallery">
+    <p class="section-label">// SCREENSHOTS</p>
+    <h2 class="section-title">See It In Action</h2>
+    <div class="gallery-grid">
+
+      <button class="gallery-item reveal" data-full="screenshot-dino-action.png">
+        <img src="screenshot-dino-action.png" alt="Dino Blitz — dodging an obstacle mid-run" loading="lazy">
+        <span class="gallery-caption">Dino Blitz</span>
+      </button>
+
+      <button class="gallery-item reveal" data-full="screenshot-dino-bird.png">
+        <img src="screenshot-dino-bird.png" alt="Dino Blitz — the dino meets the Wasif Flap bird" loading="lazy">
+        <span class="gallery-caption">Dino Blitz</span>
+      </button>
+
+      <button class="gallery-item reveal" data-full="screenshot-flap-action.png">
+        <img src="screenshot-flap-action.png" alt="Wasif Flap — threading a narrow pipe gap" loading="lazy">
+        <span class="gallery-caption">Wasif Flap</span>
+      </button>
+
+      <button class="gallery-item reveal" data-full="screenshot-dino-start.png">
+        <img src="screenshot-dino-start.png" alt="Dino Blitz — start screen" loading="lazy">
+        <span class="gallery-caption">Dino Blitz</span>
+      </button>
+
+    </div>
+  </section>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
+    <img src="" alt="" id="lightboxImg">
+  </div>
 
   <!-- ABOUT -->
   <section id="about">
@@ -753,6 +868,30 @@
       entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
     }, {threshold:0.1});
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    // GALLERY LIGHTBOX
+    const lightbox    = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+
+    document.querySelectorAll('.gallery-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const full = item.getAttribute('data-full');
+        lightboxImg.src = full;
+        lightboxImg.alt = item.querySelector('img').alt;
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden', 'false');
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      lightboxImg.src = '';
+    }
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
   </script>
 
 </body>
