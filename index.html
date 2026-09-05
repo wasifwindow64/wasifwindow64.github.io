@@ -13,13 +13,13 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0a0e1a;
-      --surface:   #111827;
-      --border:    #1e2d45;
-      --accent:    #00e5ff;
-      --accent2:   #7c3aed;
-      --text:      #e2e8f0;
-      --muted:     #64748b;
+      --bg:        #05080f;
+      --surface:   #0d1220;
+      --border:    #2a1f00;
+      --accent:    #FFD700;
+      --accent2:   #B8860B;
+      --text:      #e8dfc8;
+      --muted:     #8a7a5a;
       --white:     #ffffff;
     }
 
@@ -39,7 +39,7 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
       padding: 1rem 2rem;
-      background: rgba(10,14,26,0.85);
+      background: rgba(5,8,15,0.90);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
@@ -82,15 +82,15 @@
       content: '';
       position: absolute; inset: 0;
       background:
-        radial-gradient(ellipse 60% 50% at 30% 40%, rgba(0,229,255,0.07) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 70% 60%, rgba(124,58,237,0.08) 0%, transparent 70%);
+        radial-gradient(ellipse 60% 50% at 30% 40%, rgba(255,215,0,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 70% 60%, rgba(184,134,11,0.08) 0%, transparent 70%);
       pointer-events: none;
     }
     .hero-tag {
       font-family: 'Space Mono', monospace;
       font-size: 0.75rem;
       color: var(--accent);
-      border: 1px solid rgba(0,229,255,0.3);
+      border: 1px solid rgba(255,215,0,0.3);
       padding: 0.3rem 0.9rem;
       border-radius: 999px;
       margin-bottom: 1.8rem;
@@ -136,7 +136,7 @@
       border-radius: 20px;
       margin: 0 auto 1.5rem auto;
       display: block;
-      border: 2px solid rgba(0,229,255,0.3);
+      border: 2px solid rgba(255,215,0,0.3);
     }
 
     /* ── GAMES SECTION ── */
@@ -186,8 +186,8 @@
       font-size: 5rem;
       position: relative;
     }
-    .game-thumb.dino  { background: linear-gradient(135deg, #0f2027, #1a3a2a); }
-    .game-thumb.flap  { background: linear-gradient(135deg, #0f1a2e, #1a2a3f); }
+    .game-thumb.dino  { background: linear-gradient(135deg, #0a0800, #1a1400); }
+    .game-thumb.flap  { background: linear-gradient(135deg, #080a00, #10180a); }
 
     .game-thumb-label {
       position: absolute; bottom: 0.8rem; left: 0.8rem;
