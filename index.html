@@ -396,9 +396,194 @@
       .nav-links { gap: 1rem; }
       .nav-logo { font-size: 0.5rem; }
     }
+
+    /* ── CUSTOM CURSOR ── */
+    * { cursor: none !important; }
+    .cursor {
+      position: fixed; top: 0; left: 0;
+      width: 20px; height: 20px;
+      pointer-events: none; z-index: 99999;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-inner {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 4px; height: 4px;
+      background: #FF4500;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #FF4500;
+    }
+    /* crosshair lines */
+    .cursor-line {
+      position: absolute;
+      background: #FF4500;
+      box-shadow: 0 0 4px #FF4500;
+    }
+    .cursor-line.h { width: 20px; height: 1.5px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .cursor-line.v { width: 1.5px; height: 20px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .cursor-ring {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 18px; height: 18px;
+      border: 1.5px solid rgba(255,69,0,0.6);
+      border-radius: 50%;
+    }
+    .cursor-trail {
+      position: fixed; top: 0; left: 0;
+      width: 30px; height: 30px;
+      pointer-events: none; z-index: 99998;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(255,69,0,0.3);
+      border-radius: 50%;
+      transition: all 0.12s ease;
+    }
+
+    /* ── LOADING SCREEN ── */
+    #loader {
+      position: fixed; inset: 0; z-index: 999999;
+      background: #080a0f;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #loader.hide { opacity: 0; visibility: hidden; }
+    .loader-logo {
+      width: 120px; height: 120px;
+      border-radius: 16px; object-fit: cover;
+      border: 3px solid #FF4500;
+      box-shadow: 0 0 40px rgba(255,69,0,0.6);
+      animation: loader-pulse 1s ease-in-out infinite;
+      margin-bottom: 2rem;
+    }
+    .loader-title {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 3rem; letter-spacing: 0.15em;
+      background: linear-gradient(90deg, #FF4500, #FFD700, #5D9E3A);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+    .loader-sub {
+      font-family: "Press Start 2P", monospace;
+      font-size: 0.5rem; color: #5D9E3A;
+      margin-bottom: 2.5rem; letter-spacing: 0.1em;
+    }
+    .loader-bar-wrap {
+      width: 260px; height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px; overflow: hidden;
+      border: 1px solid rgba(255,69,0,0.3);
+    }
+    .loader-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #FF4500, #FFD700, #5D9E3A);
+      border-radius: 999px;
+      animation: load-fill 2.2s ease forwards;
+    }
+    .loader-pct {
+      font-family: "Press Start 2P", monospace;
+      font-size: 0.55rem; color: #FF7700;
+      margin-top: 0.8rem;
+    }
+    @keyframes loader-pulse {
+      0%,100% { box-shadow: 0 0 30px rgba(255,69,0,0.5); }
+      50%      { box-shadow: 0 0 60px rgba(255,215,0,0.7); }
+    }
+    @keyframes load-fill {
+      0%   { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    /* ── FIRE PARTICLES ── */
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      border-radius: 50%;
+      animation: rise linear infinite;
+    }
+    @keyframes rise {
+      0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0.8; }
+      50%  { transform: translateY(-50vh) translateX(var(--drift)) scale(0.7); opacity: 0.5; }
+      100% { transform: translateY(-100vh) translateX(calc(var(--drift) * 2)) scale(0.2); opacity: 0; }
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    * { cursor: none !important; }
+    .cursor {
+      position: fixed; pointer-events: none; z-index: 99999;
+      transform: translate(-50%, -50%);
+      top: 0; left: 0;
+    }
+    .cur-dot { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:4px;height:4px;background:#FF4500;border-radius:50%;box-shadow:0 0 6px #FF4500; }
+    .cur-lh  { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:18px;height:1.5px;background:#FF4500; }
+    .cur-lv  { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:1.5px;height:18px;background:#FF4500; }
+    .cur-ring{ position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;border:1.5px solid rgba(255,69,0,0.6);border-radius:50%; }
+    .cursor-trail {
+      position:fixed;pointer-events:none;z-index:99998;
+      transform:translate(-50%,-50%);
+      top:0;left:0;
+      width:28px;height:28px;
+      border:1px solid rgba(255,69,0,0.3);
+      border-radius:50%;
+      transition:left 0.09s ease,top 0.09s ease;
+    }
+
+    /* ── LOADER ── */
+    #loader {
+      position:fixed;inset:0;z-index:999999;
+      background:#080a0f;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      transition:opacity 0.7s ease,visibility 0.7s ease;
+    }
+    #loader.hide{opacity:0;visibility:hidden;pointer-events:none;}
+    .ld-logo{width:120px;height:120px;border-radius:16px;object-fit:cover;border:3px solid #FF4500;box-shadow:0 0 40px rgba(255,69,0,0.6);animation:ldpulse 1s ease-in-out infinite;margin-bottom:1.8rem;}
+    .ld-title{font-family:"Bebas Neue",sans-serif;font-size:2.8rem;letter-spacing:0.15em;background:linear-gradient(90deg,#FF4500,#FFD700,#5D9E3A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.4rem;}
+    .ld-sub{font-family:"Press Start 2P",monospace;font-size:0.48rem;color:#5D9E3A;margin-bottom:2.2rem;letter-spacing:0.08em;}
+    .ld-bar-wrap{width:240px;height:5px;background:rgba(255,255,255,0.08);border-radius:999px;overflow:hidden;border:1px solid rgba(255,69,0,0.25);}
+    .ld-bar{height:100%;background:linear-gradient(90deg,#FF4500,#FFD700,#5D9E3A);border-radius:999px;width:0%;transition:width 0.1s linear;}
+    .ld-pct{font-family:"Press Start 2P",monospace;font-size:0.5rem;color:#FF7700;margin-top:0.7rem;}
+    @keyframes ldpulse{0%,100%{box-shadow:0 0 30px rgba(255,69,0,0.5);}50%{box-shadow:0 0 60px rgba(255,215,0,0.7);}}
+
+    /* ── PARTICLES ── */
+    .fp{position:fixed;pointer-events:none;z-index:0;animation:frise linear infinite;}
+    @keyframes frise{0%{transform:translateY(0) translateX(0) scale(1);opacity:0.8;}50%{transform:translateY(-50vh) translateX(var(--fd)) scale(0.6);opacity:0.5;}100%{transform:translateY(-100vh) translateX(calc(var(--fd)*2)) scale(0.1);opacity:0;}}
   </style>
 </head>
 <body>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <img src="logo.jpg" class="loader-logo" alt="Loading">
+    <div class="loader-title">WASIF AGAMER</div>
+    <div class="loader-sub">🇵🇰 Pakistani Game Developer</div>
+    <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+    <div class="loader-pct" id="loader-pct">0%</div>
+  </div>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor" id="cursor">
+    <div class="cursor-inner"></div>
+    <div class="cursor-line h"></div>
+    <div class="cursor-line v"></div>
+    <div class="cursor-ring"></div>
+  </div>
+  <div class="cursor-trail" id="cursorTrail"></div>
+
+
+
+  <!-- LOADER -->
+  <div id="loader">
+    <img src="logo.jpg" class="ld-logo" alt="Loading">
+    <div class="ld-title">WASIF AGAMER</div>
+    <div class="ld-sub">🇵🇰 Pakistani Game Developer</div>
+    <div class="ld-bar-wrap"><div class="ld-bar" id="ld-bar"></div></div>
+    <div class="ld-pct" id="ld-pct">0%</div>
+  </div>
+  <!-- CURSOR -->
+  <div class="cursor" id="cur"><div class="cur-dot"></div><div class="cur-lh"></div><div class="cur-lv"></div><div class="cur-ring"></div></div>
+  <div class="cursor-trail" id="cur-trail"></div>
 
   <div class="stars" id="stars"></div>
 
@@ -502,25 +687,81 @@
     <p>© 2026 WASIF AGAMER &nbsp;·&nbsp; <a href="https://wasif-agamer.itch.io" target="_blank">ITCH.IO</a> &nbsp;·&nbsp; <a class="mc" href="https://github.com/wasifwindow64" target="_blank">GITHUB</a> &nbsp;·&nbsp; MADE WITH 🎮</p>
   </footer>
 
+
+
   <script>
-    // Stars
+    // LOADER
+    const loader = document.getElementById('loader');
+    const ldBar  = document.getElementById('ld-bar');
+    const ldPct  = document.getElementById('ld-pct');
+    let pct = 0;
+    const iv = setInterval(() => {
+      pct += Math.random() * 5 + 1;
+      if (pct >= 100) { pct = 100; clearInterval(iv); }
+      ldBar.style.width = pct + '%';
+      ldPct.textContent = Math.floor(pct) + '%';
+    }, 60);
+    window.addEventListener('load', () => {
+      setTimeout(() => loader.classList.add('hide'), 2500);
+    });
+
+    // CURSOR
+    const cur   = document.getElementById('cur');
+    const trail = document.getElementById('cur-trail');
+    let mx = 0, my = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cur.style.left = mx + 'px';
+      cur.style.top  = my + 'px';
+      trail.style.left = mx + 'px';
+      trail.style.top  = my + 'px';
+    });
+    document.querySelectorAll('a,button').forEach(el => {
+      el.addEventListener('mouseenter', () => { cur.style.transform='translate(-50%,-50%) scale(1.5)'; });
+      el.addEventListener('mouseleave', () => { cur.style.transform='translate(-50%,-50%) scale(1)'; });
+    });
+
+    // FIRE + MC PARTICLES
+    const pcols = ['#FF4500','#FF6600','#FF7700','#FFD700','#FF3300','#5D9E3A','#8BC34A'];
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.classList.add('fp');
+      const sz  = Math.random() * 7 + 3;
+      const isMC = Math.random() > 0.62;
+      const col  = pcols[Math.floor(Math.random() * pcols.length)];
+      p.style.cssText = `
+        width:${sz}px;height:${sz}px;
+        left:${Math.random()*100}vw;bottom:-20px;
+        background:${col};
+        border-radius:${isMC?'0':'50%'};
+        --fd:${(Math.random()-.5)*130}px;
+        animation-duration:${Math.random()*6+4}s;
+        animation-delay:${Math.random()*5}s;
+        opacity:${Math.random()*0.5+0.3};
+        filter:blur(${Math.random()*1.2}px);
+        box-shadow:0 0 ${sz*2}px ${col};
+      `;
+      document.body.appendChild(p);
+    }
+
+    // STARS
     const sc = document.getElementById('stars');
     for (let i = 0; i < 80; i++) {
       const s = document.createElement('div');
       s.classList.add('star');
       if (Math.random() > 0.6) s.classList.add('mc');
-      s.style.left = Math.random() * 100 + '%';
-      s.style.top = Math.random() * 100 + '%';
-      s.style.animationDuration = (Math.random() * 3 + 1.5) + 's';
-      s.style.animationDelay = (Math.random() * 4) + 's';
+      s.style.left = Math.random()*100+'%';
+      s.style.top  = Math.random()*100+'%';
+      s.style.animationDuration = (Math.random()*3+1.5)+'s';
+      s.style.animationDelay    = (Math.random()*4)+'s';
       sc.appendChild(s);
     }
-    // Scroll reveal
-    const els = document.querySelectorAll('.reveal');
+
+    // SCROLL REVEAL
     const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.1 });
-    els.forEach(el => obs.observe(el));
+      entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+    }, {threshold:0.1});
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
   </script>
 
 </body>
