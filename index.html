@@ -566,15 +566,22 @@
     }
     .bullet-tracer {
       position: fixed; z-index: 999996; pointer-events: none;
-      width: 4px; height: 4px; margin: -2px 0 0 -2px;
-      background: #FFD700; border-radius: 50%;
-      box-shadow: 0 0 10px 3px rgba(255,215,0,0.8);
-      animation: bulletFade 0.25s ease-out forwards;
+      width: 10px; height: 20px;
+      image-rendering: pixelated;
+      filter: drop-shadow(0 0 6px rgba(255,215,0,0.8));
+      animation: bulletFly 0.3s ease-out forwards;
     }
-    @keyframes bulletFade {
-      0%   { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(0.4); }
+    @keyframes bulletFly {
+      0%   { transform: translate(-50%, -50%) rotate(-40deg) translate(0, 0);     opacity: 1; }
+      100% { transform: translate(-50%, -50%) rotate(-40deg) translate(0, -90px); opacity: 0; }
     }
+    @keyframes gunRecoil {
+      0%   { transform: translate(-50%, -50%) translate(0, 0); }
+      25%  { transform: translate(-50%, -50%) translate(-6px, 5px); }
+      55%  { transform: translate(-50%, -50%) translate(3px, -2px); }
+      100% { transform: translate(-50%, -50%) translate(0, 0); }
+    }
+    .cur-gun.recoil { animation: gunRecoil 0.18s ease-out; }
 
     /* ── TNT EXPLOSION (click on buttons/links) ── */
     .tnt-flash {
@@ -909,11 +916,19 @@
       document.body.appendChild(flash);
       setTimeout(() => flash.remove(), 220);
 
-      const bullet = document.createElement('div');
+      const bullet = document.createElement('img');
+      bullet.src = 'cursor-bullet.png';
       bullet.className = 'bullet-tracer';
       bullet.style.left = x + 'px'; bullet.style.top = y + 'px';
       document.body.appendChild(bullet);
-      setTimeout(() => bullet.remove(), 250);
+      setTimeout(() => bullet.remove(), 320);
+
+      const gunImg = document.querySelector('#cur .cur-gun');
+      if (gunImg) {
+        gunImg.classList.remove('recoil');
+        void gunImg.offsetWidth; // restart animation even on rapid clicks
+        gunImg.classList.add('recoil');
+      }
     }
 
     function spawnTNTExplosion(x, y) {
