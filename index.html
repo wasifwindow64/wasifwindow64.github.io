@@ -327,6 +327,158 @@
       font-style: italic;
       text-align: center;
     }
+
+    /* ── ANIMATIONS ── */
+
+    /* Floating animation for hero logo */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+    }
+
+    /* Glow pulse for accent elements */
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(255,215,0,0.3), 0 0 20px rgba(255,215,0,0.1); }
+      50% { box-shadow: 0 0 25px rgba(255,215,0,0.7), 0 0 50px rgba(255,215,0,0.3); }
+    }
+
+    /* Shimmer for buttons */
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    /* Fade in up */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Fade in */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Character bounce */
+    @keyframes bounce-char {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-12px) scale(1.05); }
+    }
+
+    /* Rotating border */
+    @keyframes border-spin {
+      0% { border-color: rgba(255,215,0,0.8) rgba(255,215,0,0.2) rgba(255,215,0,0.2) rgba(255,215,0,0.2); }
+      25% { border-color: rgba(255,215,0,0.2) rgba(255,215,0,0.8) rgba(255,215,0,0.2) rgba(255,215,0,0.2); }
+      50% { border-color: rgba(255,215,0,0.2) rgba(255,215,0,0.2) rgba(255,215,0,0.8) rgba(255,215,0,0.2); }
+      75% { border-color: rgba(255,215,0,0.2) rgba(255,215,0,0.2) rgba(255,215,0,0.2) rgba(255,215,0,0.8); }
+      100% { border-color: rgba(255,215,0,0.8) rgba(255,215,0,0.2) rgba(255,215,0,0.2) rgba(255,215,0,0.2); }
+    }
+
+    /* Stars twinkling */
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Apply floating to hero logo */
+    .hero-logo {
+      animation: float 3s ease-in-out infinite, border-spin 4s linear infinite;
+    }
+
+    /* Hero content fade in */
+    .hero-tag { animation: fadeInUp 0.8s ease 0.2s both; }
+    .hero h1  { animation: fadeInUp 0.8s ease 0.4s both; }
+    .hero-sub { animation: fadeInUp 0.8s ease 0.6s both; }
+    .hero-cta { animation: fadeInUp 0.8s ease 0.8s both, glow-pulse 2s ease-in-out 1.5s infinite; }
+
+    /* Shimmer button effect */
+    .btn-primary {
+      background: linear-gradient(90deg, #FFD700, #FFF176, #FFD700, #B8860B, #FFD700);
+      background-size: 300% auto;
+      animation: shimmer 3s linear infinite;
+      color: #000;
+    }
+    .btn-primary:hover {
+      animation: shimmer 1s linear infinite;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255,215,0,0.4);
+    }
+
+    /* Game card hover animation */
+    .game-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .game-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(255,215,0,0.15);
+      border-color: #FFD700;
+    }
+
+    /* Character bounce on card hover */
+    .game-card:hover img {
+      animation: bounce-char 0.8s ease infinite;
+    }
+
+    /* Nav logo spin on hover */
+    .nav-logo img {
+      transition: transform 0.4s ease;
+    }
+    .nav-logo:hover img {
+      transform: rotate(360deg) scale(1.1);
+    }
+
+    /* Stat box pulse */
+    .stat-box {
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .stat-box:hover {
+      transform: scale(1.05);
+      border-color: #FFD700;
+      box-shadow: 0 0 20px rgba(255,215,0,0.2);
+    }
+
+    /* Nav links underline animation */
+    .nav-links a {
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 2px;
+      background: #FFD700;
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* Stars background */
+    .stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: #FFD700;
+      border-radius: 50%;
+      animation: twinkle linear infinite;
+    }
   </style>
 </head>
 <body>
@@ -443,5 +595,37 @@
     <p>© 2026 Wasif Agamer &nbsp;·&nbsp; <a href="https://wasif-agamer.itch.io" target="_blank">itch.io</a> &nbsp;·&nbsp; Made with 🎮</p>
   </footer>
 
+
+  <!-- Stars background -->
+  <div class="stars" id="stars"></div>
+
+  <script>
+    // Generate stars
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 80; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.animationDuration = (Math.random() * 3 + 1.5) + 's';
+      star.style.animationDelay = (Math.random() * 3) + 's';
+      star.style.opacity = Math.random() * 0.7 + 0.1;
+      starsContainer.appendChild(star);
+    }
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.game-card, .stat-box, .about-text, .section-title, .section-label');
+    reveals.forEach(el => el.classList.add('reveal'));
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    reveals.forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>
