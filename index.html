@@ -626,6 +626,15 @@
     .fp{position:fixed;pointer-events:none;z-index:0;animation:frise linear infinite;}
     @keyframes frise{0%{transform:translateY(0) translateX(0) scale(1);opacity:0.8;}50%{transform:translateY(-50vh) translateX(var(--fd)) scale(0.6);opacity:0.5;}100%{transform:translateY(-100vh) translateX(calc(var(--fd)*2)) scale(0.1);opacity:0;}}
 
+    /* ── MATRIX RAIN ── */
+    #matrixCanvas {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.16;
+    }
+
     /* ── SCREENSHOTS GALLERY ── */
     #gallery {
       padding: 5rem 1.5rem;
@@ -709,7 +718,8 @@
 </head>
 <body>
 
-
+  <!-- MATRIX RAIN -->
+  <canvas id="matrixCanvas"></canvas>
 
   <!-- LOADER -->
   <div id="loader">
@@ -962,6 +972,40 @@
         spawnMuzzleFire(e.clientX, e.clientY);
       }
     });
+
+    // MATRIX RAIN
+    (function () {
+      const canvas = document.getElementById('matrixCanvas');
+      const ctx = canvas.getContext('2d');
+      const fontSize = 16;
+      const chars = '01アイウエオ01木石01剣盾01'.split('');
+      let columns, drops;
+
+      function setup() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        columns = Math.floor(canvas.width / fontSize);
+        drops = new Array(columns).fill(1);
+      }
+      setup();
+      window.addEventListener('resize', setup);
+
+      function draw() {
+        ctx.fillStyle = 'rgba(8,10,15,0.08)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.font = fontSize + 'px monospace';
+        for (let i = 0; i < drops.length; i++) {
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillStyle = Math.random() > 0.85 ? '#8BC34A' : '#5D9E3A';
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+      setInterval(draw, 50);
+    })();
 
     // FIRE + MC PARTICLES
     const pcols = ['#FF4500','#FF6600','#FF7700','#FFD700','#FF3300','#5D9E3A','#8BC34A'];
