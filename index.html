@@ -526,6 +526,7 @@
     .cur-gun {
       width: 42px; height: 42px;
       object-fit: contain;
+      transform: translate(-50%, -50%) scaleX(-1);
       filter: drop-shadow(0 0 4px rgba(255,69,0,0.6));
     }
     .cur-tnt {
@@ -576,10 +577,10 @@
       100% { transform: translate(-50%, -50%) rotate(-40deg) translate(0, -90px); opacity: 0; }
     }
     @keyframes gunRecoil {
-      0%   { transform: translate(-50%, -50%) translate(0, 0); }
-      25%  { transform: translate(-50%, -50%) translate(-6px, 5px); }
-      55%  { transform: translate(-50%, -50%) translate(3px, -2px); }
-      100% { transform: translate(-50%, -50%) translate(0, 0); }
+      0%   { transform: translate(-50%, -50%) scaleX(-1) translate(0, 0); }
+      25%  { transform: translate(-50%, -50%) scaleX(-1) translate(-6px, 5px); }
+      55%  { transform: translate(-50%, -50%) scaleX(-1) translate(3px, -2px); }
+      100% { transform: translate(-50%, -50%) scaleX(-1) translate(0, 0); }
     }
     .cur-gun.recoil { animation: gunRecoil 0.18s ease-out; }
 
