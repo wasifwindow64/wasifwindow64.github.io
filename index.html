@@ -697,13 +697,20 @@
     let pct = 0;
     const iv = setInterval(() => {
       pct += Math.random() * 5 + 1;
-      if (pct >= 100) { pct = 100; clearInterval(iv); }
+      if (pct >= 100) {
+        pct = 100;
+        ldBar.style.width = '100%';
+        ldPct.textContent = '100%';
+        clearInterval(iv);
+        setTimeout(() => {
+          loader.style.opacity = '0';
+          loader.style.visibility = 'hidden';
+          loader.style.pointerEvents = 'none';
+        }, 600);
+      }
       ldBar.style.width = pct + '%';
       ldPct.textContent = Math.floor(pct) + '%';
     }, 60);
-    window.addEventListener('load', () => {
-      setTimeout(() => loader.classList.add('hide'), 2500);
-    });
 
     // CURSOR
     const cur   = document.getElementById('cur');
