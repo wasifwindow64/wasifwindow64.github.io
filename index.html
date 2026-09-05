@@ -186,8 +186,8 @@
       font-size: 5rem;
       position: relative;
     }
-    .game-thumb.dino  { background: linear-gradient(135deg, #0a0800, #1a1400); }
-    .game-thumb.flap  { background: linear-gradient(135deg, #080a00, #10180a); }
+    .game-thumb.dino  { background: radial-gradient(ellipse at center, #1a1200 0%, #0a0800 100%); }
+    .game-thumb.flap  { background: radial-gradient(ellipse at center, #0a1200 0%, #050800 100%); }
 
     .game-thumb-label {
       position: absolute; bottom: 0.8rem; left: 0.8rem;
@@ -363,7 +363,7 @@
       <!-- Dino Blitz -->
       <div class="game-card">
         <div class="game-thumb dino">
-          🦕
+          <img src="dino.png" alt="Dino Blitz" style="height:110px; object-fit:contain; filter: drop-shadow(0 0 18px rgba(255,215,0,0.35));">
           <span class="game-thumb-label">endless runner</span>
         </div>
         <div class="game-body">
@@ -384,7 +384,7 @@
       <!-- Wasif Flap -->
       <div class="game-card">
         <div class="game-thumb flap">
-          🐦
+          <img src="bird.png" alt="Wasif Flap" style="height:110px; object-fit:contain; filter: drop-shadow(0 0 18px rgba(255,165,0,0.35));">
           <span class="game-thumb-label">flappy style</span>
         </div>
         <div class="game-body">
