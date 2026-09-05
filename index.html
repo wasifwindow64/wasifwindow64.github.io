@@ -520,12 +520,19 @@
     .cur-gun, .cur-tnt {
       position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
+      image-rendering: pixelated;
+      pointer-events: none;
     }
     .cur-gun {
-      transform: translate(-50%, -50%) rotate(-35deg);
+      width: 42px; height: 42px;
+      object-fit: contain;
       filter: drop-shadow(0 0 4px rgba(255,69,0,0.6));
     }
-    .cur-tnt { display: none; }
+    .cur-tnt {
+      width: 28px; height: 28px;
+      object-fit: contain;
+      display: none;
+    }
     .cursor.cur-hover .cur-gun { display: none; }
     .cursor.cur-hover .cur-tnt {
       display: block;
@@ -706,22 +713,8 @@
   </div>
   <!-- CURSOR -->
   <div class="cursor" id="cur">
-    <svg class="cur-gun" width="34" height="16" viewBox="0 0 34 16" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="6" width="24" height="4" fill="#2b2b2b"/>
-      <rect x="17" y="1" width="5" height="10" fill="#3a2c1f"/>
-      <rect x="3" y="9" width="9" height="6" fill="#8B5E3C"/>
-      <rect x="9" y="0" width="4" height="6" fill="#1a1a1a"/>
-      <rect x="24" y="5" width="2" height="6" fill="#555"/>
-      <rect x="26" y="6" width="8" height="4" fill="#FF4500"/>
-    </svg>
-    <svg class="cur-tnt" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <rect x="1" y="1" width="22" height="22" fill="#e8e8e8"/>
-      <rect x="1" y="5" width="22" height="6" fill="#c0392b"/>
-      <rect x="1" y="14" width="22" height="6" fill="#c0392b"/>
-      <rect x="4" y="7" width="16" height="2" fill="#fff"/>
-      <rect x="4" y="16" width="16" height="2" fill="#fff"/>
-      <circle cx="12" cy="2" r="2" fill="#1a1a1a"/>
-    </svg>
+    <img class="cur-gun" src="cursor-gun.png" alt="">
+    <img class="cur-tnt" src="cursor-tnt.png" alt="">
   </div>
   <div class="cursor-trail" id="cur-trail"></div>
 
