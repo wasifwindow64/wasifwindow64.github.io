@@ -636,84 +636,131 @@
       opacity: 0.16;
     }
 
-    /* ── SCREENSHOTS GALLERY ── */
-    #gallery {
-      padding: 5rem 1.5rem;
-      max-width: 1000px;
-      margin: 0 auto;
-      border-top: 1px solid var(--border);
-      position: relative; z-index: 1;
-    }
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.4rem;
-    }
-    .gallery-item {
-      position: relative;
-      padding: 0;
-      border: 2px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
+    /* ── SCREENSHOTS BUTTON (per game card) ── */
+    .btn-shots {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600; font-size: 0.95rem;
+      letter-spacing: 0.03em;
       cursor: none;
-      background: var(--surface);
-      line-height: 0;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      background: transparent;
+      transition: transform 0.2s ease, background 0.2s ease;
     }
-    .gallery-item:nth-child(odd):hover {
-      border-color: var(--fire);
-      box-shadow: 0 20px 50px rgba(255,69,0,0.25);
-      transform: translateY(-6px) scale(1.02);
+    .mc-card .btn-shots {
+      border: 2px solid var(--mc-green);
+      color: var(--mc-green);
     }
-    .gallery-item:nth-child(even):hover {
-      border-color: var(--mc-green);
-      box-shadow: 0 20px 50px rgba(93,158,58,0.25);
-      transform: translateY(-6px) scale(1.02);
+    .mc-card .btn-shots:hover {
+      background: rgba(93,158,58,0.12);
+      transform: translateY(-2px);
     }
-    .gallery-item img {
-      width: 100%; height: 200px;
-      object-fit: cover; display: block;
-      image-rendering: pixelated;
+    .fire-card .btn-shots {
+      border: 2px solid var(--fire);
+      color: var(--fire2);
     }
-    .gallery-caption {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 0.6rem 0.8rem;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.5rem;
-      letter-spacing: 0.05em;
-      color: #fff;
-      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-      text-align: left;
+    .fire-card .btn-shots:hover {
+      background: rgba(255,69,0,0.12);
+      transform: translateY(-2px);
     }
-    .gallery-item:nth-child(odd) .gallery-caption  { color: #FF7700; }
-    .gallery-item:nth-child(even) .gallery-caption { color: #8BC34A; }
+    .game-actions {
+      display: flex; gap: 0.7rem; flex-wrap: wrap;
+    }
+    .game-actions a.btn-mc, .game-actions a.btn-fire { flex: 1 1 auto; }
 
-    .lightbox {
+    /* ── SCREENSHOT VIEWER MODAL ── */
+    .shots-modal {
       position: fixed; inset: 0;
       background: rgba(8,10,15,0.94);
       display: none;
       align-items: center; justify-content: center;
       z-index: 999998;
-      padding: 3rem;
+      padding: 2rem;
     }
-    .lightbox.open { display: flex; }
-    .lightbox img {
-      max-width: 100%; max-height: 88vh;
-      border-radius: 8px;
-      border: 2px solid var(--fire);
-      box-shadow: 0 0 40px rgba(255,69,0,0.4);
+    .shots-modal.open { display: flex; }
+    .shots-box {
+      position: relative;
+      max-width: 900px; width: 100%;
+      background: var(--surface);
+      border-radius: 14px;
+      border: 2px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    }
+    .shots-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.3rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .shots-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.03em;
+      color: var(--text);
+    }
+    .shots-close {
+      background: none; border: 2px solid var(--border);
+      color: var(--text); width: 34px; height: 34px; border-radius: 6px;
+      font-size: 1rem; cursor: none;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+    .shots-close:hover { border-color: var(--fire); color: var(--fire2); }
+
+    .shots-stage {
+      position: relative;
+      background: #000;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 300px;
+    }
+    .shots-stage img {
+      width: 100%; max-height: 65vh;
+      object-fit: contain;
       image-rendering: pixelated;
+      display: block;
     }
-    .lightbox-close {
-      position: absolute; top: 1.5rem; right: 1.8rem;
-      background: none; border: 2px solid var(--mc-green);
-      color: #fff; width: 40px; height: 40px; border-radius: 6px;
-      font-size: 1.2rem; cursor: none;
+    .shots-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.25);
+      background: rgba(8,10,15,0.55);
+      color: #fff; font-size: 1.3rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .shots-arrow:hover { border-color: var(--fire); background: rgba(255,69,0,0.25); }
+    .shots-arrow.prev { left: 14px; }
+    .shots-arrow.next { right: 14px; }
+    .shots-arrow.hidden { display: none; }
+
+    .shots-footer {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+    }
+    .shots-count {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      color: var(--muted);
+      margin-right: 0.8rem;
+    }
+    .shots-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border);
+      cursor: none;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .shots-dot.active {
+      background: var(--fire);
+      transform: scale(1.3);
     }
 
     @media (max-width: 640px) {
-      .gallery-item img { height: 160px; }
-      .gallery-grid { grid-template-columns: 1fr; }
+      .shots-stage img { max-height: 45vh; }
+      .shots-arrow { width: 36px; height: 36px; font-size: 1.1rem; }
     }
   </style>
 </head>
@@ -747,7 +794,6 @@
     </a>
     <ul class="nav-links">
       <li><a href="#games">Games</a></li>
-      <li><a href="#gallery">Screenshots</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="https://wasif-agamer.itch.io" target="_blank">Itch.io</a></li>
     </ul>
@@ -788,6 +834,7 @@
           </div>
           <div class="game-actions">
             <a class="btn-mc" href="https://wasif-agamer.itch.io/dino-blitz" target="_blank">▶ Play / Download</a>
+            <button class="btn-shots" data-game="dino">🖼 Screenshots</button>
           </div>
         </div>
       </div>
@@ -809,6 +856,7 @@
           </div>
           <div class="game-actions">
             <a class="btn-fire" href="https://wasif-agamer.itch.io/wasif-flap" target="_blank">▶ Play / Download</a>
+            <button class="btn-shots" data-game="flap">🖼 Screenshots</button>
           </div>
         </div>
       </div>
@@ -816,39 +864,23 @@
     </div>
   </section>
 
-  <!-- SCREENSHOTS -->
-  <section id="gallery">
-    <p class="section-label">// SCREENSHOTS</p>
-    <h2 class="section-title">See It In Action</h2>
-    <div class="gallery-grid">
-
-      <button class="gallery-item reveal" data-full="screenshot-dino-action.png">
-        <img src="screenshot-dino-action.png" alt="Dino Blitz — dodging an obstacle mid-run" loading="lazy">
-        <span class="gallery-caption">Dino Blitz</span>
-      </button>
-
-      <button class="gallery-item reveal" data-full="screenshot-dino-bird.png">
-        <img src="screenshot-dino-bird.png" alt="Dino Blitz — the dino meets the Wasif Flap bird" loading="lazy">
-        <span class="gallery-caption">Dino Blitz</span>
-      </button>
-
-      <button class="gallery-item reveal" data-full="screenshot-flap-action.png">
-        <img src="screenshot-flap-action.png" alt="Wasif Flap — threading a narrow pipe gap" loading="lazy">
-        <span class="gallery-caption">Wasif Flap</span>
-      </button>
-
-      <button class="gallery-item reveal" data-full="screenshot-dino-start.png">
-        <img src="screenshot-dino-start.png" alt="Dino Blitz — start screen" loading="lazy">
-        <span class="gallery-caption">Dino Blitz</span>
-      </button>
-
+  <!-- SCREENSHOT VIEWER MODAL -->
+  <div class="shots-modal" id="shotsModal" aria-hidden="true">
+    <div class="shots-box">
+      <div class="shots-header">
+        <span class="shots-title" id="shotsTitle">Screenshots</span>
+        <button class="shots-close" id="shotsClose" aria-label="Close">✕</button>
+      </div>
+      <div class="shots-stage">
+        <button class="shots-arrow prev" id="shotsPrev" aria-label="Previous">‹</button>
+        <img id="shotsImg" src="" alt="">
+        <button class="shots-arrow next" id="shotsNext" aria-label="Next">›</button>
+      </div>
+      <div class="shots-footer">
+        <span class="shots-count" id="shotsCount">1 / 1</span>
+        <div class="shots-dots" id="shotsDots" style="display:flex; gap:0.4rem;"></div>
+      </div>
     </div>
-  </section>
-
-  <!-- LIGHTBOX -->
-  <div class="lightbox" id="lightbox" aria-hidden="true">
-    <button class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
-    <img src="" alt="" id="lightboxImg">
   </div>
 
   <!-- ABOUT -->
@@ -1050,29 +1082,87 @@
     }, {threshold:0.1});
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-    // GALLERY LIGHTBOX
-    const lightbox    = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightboxImg');
-    const lightboxClose = document.getElementById('lightboxClose');
+    // PER-GAME SCREENSHOT VIEWER
+    const shotsData = {
+      dino: {
+        title: 'Dino Blitz — Screenshots',
+        images: [
+          { src: 'screenshot-dino-action.png', alt: 'Dino Blitz — dodging an obstacle mid-run' },
+          { src: 'screenshot-dino-bird.png',   alt: 'Dino Blitz — the dino meets the Wasif Flap bird' },
+          { src: 'screenshot-dino-start.png',  alt: 'Dino Blitz — start screen' }
+        ]
+      },
+      flap: {
+        title: 'Wasif Flap — Screenshots',
+        images: [
+          { src: 'screenshot-flap-action.png', alt: 'Wasif Flap — threading a narrow pipe gap' }
+        ]
+      }
+    };
 
-    document.querySelectorAll('.gallery-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const full = item.getAttribute('data-full');
-        lightboxImg.src = full;
-        lightboxImg.alt = item.querySelector('img').alt;
-        lightbox.classList.add('open');
-        lightbox.setAttribute('aria-hidden', 'false');
+    const shotsModal = document.getElementById('shotsModal');
+    const shotsTitle = document.getElementById('shotsTitle');
+    const shotsImg   = document.getElementById('shotsImg');
+    const shotsClose = document.getElementById('shotsClose');
+    const shotsPrev  = document.getElementById('shotsPrev');
+    const shotsNext  = document.getElementById('shotsNext');
+    const shotsCount = document.getElementById('shotsCount');
+    const shotsDots  = document.getElementById('shotsDots');
+
+    let currentSet = [];
+    let currentIndex = 0;
+
+    function renderShot() {
+      const item = currentSet[currentIndex];
+      shotsImg.src = item.src;
+      shotsImg.alt = item.alt;
+      shotsCount.textContent = (currentIndex + 1) + ' / ' + currentSet.length;
+
+      shotsDots.innerHTML = '';
+      currentSet.forEach((_, i) => {
+        const dot = document.createElement('span');
+        dot.className = 'shots-dot' + (i === currentIndex ? ' active' : '');
+        dot.addEventListener('click', () => { currentIndex = i; renderShot(); });
+        shotsDots.appendChild(dot);
       });
+
+      const multi = currentSet.length > 1;
+      shotsPrev.classList.toggle('hidden', !multi);
+      shotsNext.classList.toggle('hidden', !multi);
+    }
+
+    function openShots(gameKey) {
+      const data = shotsData[gameKey];
+      if (!data) return;
+      currentSet = data.images;
+      currentIndex = 0;
+      shotsTitle.textContent = data.title;
+      renderShot();
+      shotsModal.classList.add('open');
+      shotsModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeShots() {
+      shotsModal.classList.remove('open');
+      shotsModal.setAttribute('aria-hidden', 'true');
+      shotsImg.src = '';
+    }
+
+    document.querySelectorAll('.btn-shots').forEach(btn => {
+      btn.addEventListener('click', () => openShots(btn.getAttribute('data-game')));
     });
 
-    function closeLightbox() {
-      lightbox.classList.remove('open');
-      lightbox.setAttribute('aria-hidden', 'true');
-      lightboxImg.src = '';
-    }
-    lightboxClose.addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+    shotsClose.addEventListener('click', closeShots);
+    shotsModal.addEventListener('click', e => { if (e.target === shotsModal) closeShots(); });
+    shotsPrev.addEventListener('click', () => { currentIndex = (currentIndex - 1 + currentSet.length) % currentSet.length; renderShot(); });
+    shotsNext.addEventListener('click', () => { currentIndex = (currentIndex + 1) % currentSet.length; renderShot(); });
+
+    document.addEventListener('keydown', e => {
+      if (!shotsModal.classList.contains('open')) return;
+      if (e.key === 'Escape') closeShots();
+      if (e.key === 'ArrowLeft')  shotsPrev.click();
+      if (e.key === 'ArrowRight') shotsNext.click();
+    });
   </script>
 
 </body>
