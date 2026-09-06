@@ -125,42 +125,87 @@
     .nav-links a:hover { color: var(--white); }
     .nav-links a:hover::after { width: 100%; }
 
-    .theme-toggle {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      font-size: 1.1rem;
-      display: flex; align-items: center; justify-content: center;
+    .theme-switch {
+      background: none; border: none; padding: 0;
       cursor: pointer;
-      transition: border-color 0.2s ease, transform 0.2s ease;
       margin-left: 1.2rem;
     }
-    .theme-toggle:hover {
-      border-color: var(--fire);
-      transform: rotate(15deg) scale(1.08);
+    .switch-track {
+      position: relative;
+      width: 62px; height: 30px;
+      border-radius: 999px;
+      border: 2px solid var(--border);
+      background: linear-gradient(135deg, #0b1a3a, #1c2b52);
+      overflow: hidden;
+      transition: background 0.5s ease, border-color 0.3s ease;
     }
-    .theme-toggle.spin { animation: themeSpin 0.6s ease; }
-    @keyframes themeSpin {
-      0%   { transform: rotate(0deg) scale(1); }
-      45%  { transform: rotate(200deg) scale(1.4); }
-      100% { transform: rotate(360deg) scale(1); }
+    html[data-theme="light"] .switch-track {
+      background: linear-gradient(135deg, #7ec8f5, #cdeaff);
     }
-    html:not([data-theme="light"]) .theme-toggle {
+    .switch-star {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0.9;
+      transition: opacity 0.4s ease;
+    }
+    .switch-star.s1 { top: 6px;  right: 10px; }
+    .switch-star.s2 { top: 15px; right: 18px; }
+    .switch-star.s3 { top: 20px; right: 8px;  }
+    html[data-theme="light"] .switch-star { opacity: 0; }
+
+    .switch-cloud {
+      position: absolute;
+      left: 8px; top: 9px;
+      width: 13px; height: 6px;
+      background: #fff;
+      border-radius: 999px;
+      opacity: 0;
+      transition: opacity 0.4s ease 0.1s;
+    }
+    .switch-cloud::before {
+      content: '';
+      position: absolute; left: 3px; top: -3px;
+      width: 8px; height: 8px;
+      background: #fff; border-radius: 50%;
+    }
+    html[data-theme="light"] .switch-cloud { opacity: 0.95; }
+
+    .switch-knob {
+      position: absolute; top: 2px; left: 2px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: #1a1c22;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      transition: transform 0.5s cubic-bezier(.68,-0.45,.32,1.45), background 0.4s ease;
+    }
+    html[data-theme="light"] .switch-knob {
+      transform: translateX(30px);
+      background: #FFD700;
+    }
+    .switch-knob.spin { animation: knobSpin 0.6s ease; }
+    @keyframes knobSpin {
+      0%   { transform: translateX(var(--kx,0)) rotate(0deg) scale(1); }
+      45%  { transform: translateX(var(--kx,0)) rotate(250deg) scale(1.35); }
+      100% { transform: translateX(var(--kx,0)) rotate(360deg) scale(1); }
+    }
+    html:not([data-theme="light"]) .switch-track {
       animation: torchFlicker 2.2s ease-in-out infinite;
     }
-    html[data-theme="light"] .theme-toggle {
+    html[data-theme="light"] .switch-track {
       animation: sunPulse 3s ease-in-out infinite;
     }
     @keyframes torchFlicker {
-      0%, 100% { box-shadow: 0 0 6px rgba(255,119,0,0.35); }
-      30%      { box-shadow: 0 0 15px rgba(255,69,0,0.75); }
-      60%      { box-shadow: 0 0 9px rgba(255,119,0,0.5); }
+      0%, 100% { box-shadow: 0 0 6px rgba(255,119,0,0.3); }
+      30%      { box-shadow: 0 0 14px rgba(255,69,0,0.65); }
+      60%      { box-shadow: 0 0 8px rgba(255,119,0,0.45); }
     }
     @keyframes sunPulse {
       0%, 100% { box-shadow: 0 0 6px rgba(255,215,0,0.3); }
-      50%      { box-shadow: 0 0 16px rgba(255,215,0,0.65); }
+      50%      { box-shadow: 0 0 15px rgba(255,215,0,0.6); }
     }
     .theme-particle {
       position: fixed;
@@ -740,7 +785,15 @@
       <li><a href="#about">About</a></li>
       <li><a href="https://wasif-agamer.itch.io" target="_blank">Itch.io</a></li>
     </ul>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme">🌙</button>
+    <button class="theme-switch" id="themeToggle" aria-label="Toggle light/dark theme">
+      <span class="switch-track">
+        <span class="switch-star s1"></span>
+        <span class="switch-star s2"></span>
+        <span class="switch-star s3"></span>
+        <span class="switch-cloud"></span>
+        <span class="switch-knob" id="switchKnob">🌙</span>
+      </span>
+    </button>
   </nav>
 
   <!-- HERO -->
@@ -854,26 +907,27 @@
 
 
   <script>
-    // THEME TOGGLE (dark / light) — with circular wipe transition
+    // THEME TOGGLE (dark / light) — sliding switch + circular wipe transition
     (function () {
       const root = document.documentElement;
       const btn  = document.getElementById('themeToggle');
+      const knob = document.getElementById('switchKnob');
       const saved = localStorage.getItem('wasif-theme');
 
       if (saved === 'light') {
         root.setAttribute('data-theme', 'light');
-        btn.textContent = '☀️';
+        knob.textContent = '☀️';
       }
 
       function applyTheme(isLight) {
         if (isLight) {
           root.setAttribute('data-theme', 'light');
           localStorage.setItem('wasif-theme', 'light');
-          btn.textContent = '☀️';
+          knob.textContent = '☀️';
         } else {
           root.removeAttribute('data-theme');
           localStorage.setItem('wasif-theme', 'dark');
-          btn.textContent = '🌙';
+          knob.textContent = '🌙';
         }
       }
 
@@ -902,12 +956,13 @@
         const goingLight = root.getAttribute('data-theme') !== 'light';
         const targetBg = goingLight ? '#f5f4f0' : '#080a0f';
 
-        // icon spin flair
-        btn.classList.remove('spin');
-        void btn.offsetWidth;
-        btn.classList.add('spin');
+        // knob slide + spin flair (preserve the slide position while spinning)
+        knob.style.setProperty('--kx', goingLight ? '30px' : '0px');
+        knob.classList.remove('spin');
+        void knob.offsetWidth;
+        knob.classList.add('spin');
 
-        // circular wipe from the button's position
+        // particle burst + circular wipe from the switch's position
         const rect = btn.getBoundingClientRect();
         const x = rect.left + rect.width / 2;
         const y = rect.top + rect.height / 2;
