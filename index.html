@@ -27,6 +27,32 @@
       --white:     #ffffff;
     }
 
+    html[data-theme="light"] {
+      --bg:        #f5f4f0;
+      --surface:   #ffffff;
+      --border:    #dcdad4;
+      --fire:      #E8420A;
+      --fire2:     #FF7700;
+      --mc-green:  #4C8A2E;
+      --mc-brown:  #8B5E3C;
+      --gold:      #B8860B;
+      --text:      #1a1c22;
+      --muted:     #5a5f6b;
+      --white:     #0d0f14;
+    }
+
+    html, body { transition: background-color 0.3s ease, color 0.3s ease; }
+
+    /* dim the space-themed decorations in light mode — they're built for a dark sky */
+    html[data-theme="light"] .stars,
+    html[data-theme="light"] #matrixCanvas,
+    html[data-theme="light"] .fp {
+      display: none;
+    }
+    html[data-theme="light"] nav {
+      background: rgba(255,255,255,0.92);
+    }
+
     html { scroll-behavior: smooth; }
 
     body {
@@ -98,6 +124,23 @@
     }
     .nav-links a:hover { color: var(--white); }
     .nav-links a:hover::after { width: 100%; }
+
+    .theme-toggle {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+      margin-left: 1.2rem;
+    }
+    .theme-toggle:hover {
+      border-color: var(--fire);
+      transform: rotate(15deg) scale(1.08);
+    }
 
     /* ── HERO ── */
     .hero {
@@ -651,6 +694,7 @@
       <li><a href="#about">About</a></li>
       <li><a href="https://wasif-agamer.itch.io" target="_blank">Itch.io</a></li>
     </ul>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme">🌙</button>
   </nav>
 
   <!-- HERO -->
@@ -764,6 +808,31 @@
 
 
   <script>
+    // THEME TOGGLE (dark / light)
+    (function () {
+      const root = document.documentElement;
+      const btn  = document.getElementById('themeToggle');
+      const saved = localStorage.getItem('wasif-theme');
+
+      if (saved === 'light') {
+        root.setAttribute('data-theme', 'light');
+        btn.textContent = '☀️';
+      }
+
+      btn.addEventListener('click', () => {
+        const isLight = root.getAttribute('data-theme') === 'light';
+        if (isLight) {
+          root.removeAttribute('data-theme');
+          localStorage.setItem('wasif-theme', 'dark');
+          btn.textContent = '🌙';
+        } else {
+          root.setAttribute('data-theme', 'light');
+          localStorage.setItem('wasif-theme', 'light');
+          btn.textContent = '☀️';
+        }
+      });
+    })();
+
     // LOADER
     const loader = document.getElementById('loader');
     const ldBar  = document.getElementById('ld-bar');
