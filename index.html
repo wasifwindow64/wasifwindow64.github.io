@@ -225,18 +225,16 @@
     /* ── CORNER MORPH TRANSITION (grow to fullscreen, land in opposite corner) ── */
     .theme-morph {
       position: fixed;
+      border-radius: 50%;
       z-index: 999999999;
       display: flex; align-items: center; justify-content: center;
       overflow: visible;
       pointer-events: none;
-      transition: width 0.5s cubic-bezier(.4,0,.2,1),
-                  height 0.5s cubic-bezier(.4,0,.2,1),
-                  border-radius 0.5s cubic-bezier(.4,0,.2,1);
+      transition: transform 0.5s cubic-bezier(.4,0,.2,1);
     }
     .theme-morph .morph-icon {
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       display: block;
-      transition: font-size 0.5s cubic-bezier(.4,0,.2,1);
     }
 
     /* ── HERO ── */
@@ -961,10 +959,10 @@
         }
       }
 
-      function cornerStyles(corner) {
+      function cornerCenter(corner, w, h) {
         return corner === 'tr'
-          ? { top: '78px', right: '24px', left: 'auto', bottom: 'auto' }
-          : { bottom: '18px', left: '24px', top: 'auto', right: 'auto' };
+          ? { x: window.innerWidth - 24 - w / 2, y: 78 + h / 2 }
+          : { x: 24 + w / 2, y: window.innerHeight - 18 - h / 2 };
       }
 
       btn.addEventListener('click', () => {
@@ -977,60 +975,61 @@
         const rect = btn.getBoundingClientRect();
         btn.style.visibility = 'hidden'; // real button hides; the morph clone takes over visually
 
-        // build the morph clone at the button's exact spot
+        const smallSize = 46; // roughly the button's own footprint
+        const bigSize = Math.max(window.innerWidth, window.innerHeight) * 2.3;
+        const startCenter = cornerCenter(startCorner, rect.width, rect.height);
+
+        // build the morph clone, sized big from the start but SCALED DOWN to look small —
+        // growth = scaling up, always centered on the same point, so nothing drifts off-screen
         const morph = document.createElement('div');
         morph.className = 'theme-morph';
-        Object.assign(morph.style, cornerStyles(startCorner), {
-          width: rect.width + 'px',
-          height: rect.height + 'px',
-          borderRadius: '999px',
+        Object.assign(morph.style, {
+          left: (startCenter.x - bigSize / 2) + 'px',
+          top:  (startCenter.y - bigSize / 2) + 'px',
+          width: bigSize + 'px',
+          height: bigSize + 'px',
           background: targetBg,
+          transform: 'scale(' + (smallSize / bigSize) + ')',
           transition: 'none'
         });
         morph.innerHTML = '<span class="morph-icon">' + (goingLight ? '☀️' : '🌙') + '</span>';
         document.body.appendChild(morph);
         void morph.offsetWidth;
 
-        const icon = morph.querySelector('.morph-icon');
-        const bigIconSize = (Math.min(window.innerWidth, window.innerHeight) * 0.55) + 'px';
-
-        // PHASE 1 — grow from the current corner until it covers the whole screen;
-        // the sun/moon itself grows along with it, staying visible the whole time
-        morph.style.transition = 'width 0.5s cubic-bezier(.4,0,.2,1), height 0.5s cubic-bezier(.4,0,.2,1), border-radius 0.5s cubic-bezier(.4,0,.2,1)';
-        const bigSize = (Math.max(window.innerWidth, window.innerHeight) * 2.3) + 'px';
-        requestAnimationFrame(() => {
-          Object.assign(morph.style, { width: bigSize, height: bigSize, borderRadius: '0px' });
-          icon.style.fontSize = bigIconSize;
-        });
+        // PHASE 1 — scale up to fullscreen coverage, centered on the button's own spot;
+        // the sun/moon rides along at the same visual size ratio, so it never drifts off-screen
+        morph.style.transition = 'transform 0.5s cubic-bezier(.4,0,.2,1)';
+        requestAnimationFrame(() => { morph.style.transform = 'scale(1)'; });
 
         morph.addEventListener('transitionend', function onGrowEnd(e) {
-          if (e.propertyName !== 'width') return;
+          if (e.propertyName !== 'transform') return;
           morph.removeEventListener('transitionend', onGrowEnd);
 
           // fully covered now — swap the real theme behind it, invisibly
           applyTheme(goingLight);
           spawnThemeParticles(window.innerWidth / 2, window.innerHeight / 2, goingLight);
 
-          // jump the anchor to the opposite corner while still fullscreen (still invisible)
+          // re-center on the opposite corner while still fullscreen (still invisible)
+          const endCenter = cornerCenter(endCorner, rect.width, rect.height);
           morph.style.transition = 'none';
-          Object.assign(morph.style, cornerStyles(endCorner));
+          morph.style.left = (endCenter.x - bigSize / 2) + 'px';
+          morph.style.top  = (endCenter.y - bigSize / 2) + 'px';
           void morph.offsetWidth;
-          morph.style.transition = 'width 0.5s cubic-bezier(.4,0,.2,1), height 0.5s cubic-bezier(.4,0,.2,1), border-radius 0.5s cubic-bezier(.4,0,.2,1)';
+          morph.style.transition = 'transform 0.5s cubic-bezier(.4,0,.2,1)';
 
-          // PHASE 2 — shrink back down, landing in the opposite corner; icon shrinks back too
+          // PHASE 2 — scale back down, landing in the opposite corner
           requestAnimationFrame(() => {
-            Object.assign(morph.style, { width: rect.width + 'px', height: rect.height + 'px', borderRadius: '999px' });
-            icon.style.fontSize = '1.4rem';
+            morph.style.transform = 'scale(' + (smallSize / bigSize) + ')';
           });
 
           morph.addEventListener('transitionend', function onShrinkEnd(ev) {
-            if (ev.propertyName !== 'width') return;
+            if (ev.propertyName !== 'transform') return;
             morph.removeEventListener('transitionend', onShrinkEnd);
 
             btn.classList.remove('pos-' + startCorner);
             btn.classList.add('pos-' + endCorner);
             btn.style.visibility = 'visible';
-            spawnThemeParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, goingLight);
+            spawnThemeParticles(endCenter.x, endCenter.y, goingLight);
             morph.remove();
           });
         });
