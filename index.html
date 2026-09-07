@@ -218,19 +218,43 @@
       0%   { transform: translate(0,0) scale(1);   opacity: 1; }
       100% { transform: translate(var(--px),var(--py)) scale(0.2); opacity: 0; }
     }
-    .theme-wipe {
+
+    /* ── FLYING SUN/MOON TRANSITION ── */
+    .theme-flyer {
+      position: fixed;
+      font-size: 2.4rem;
+      z-index: 9999999;
+      pointer-events: none;
+      filter: drop-shadow(0 0 14px rgba(255,215,0,0.85));
+      animation: flyAcross 0.85s cubic-bezier(.25,.75,.2,1) forwards;
+    }
+    @keyframes flyAcross {
+      0%   { transform: translate(-50%,-50%) scale(0.5) rotate(0deg);   opacity: 1; }
+      55%  { transform: translate(calc(-50% + var(--fx)*0.65), calc(-50% + var(--fy)*0.65)) scale(1.5) rotate(200deg); opacity: 1; }
+      100% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--fy))) scale(0.4) rotate(380deg); opacity: 0; }
+    }
+    .theme-trail {
       position: fixed;
       border-radius: 50%;
       pointer-events: none;
-      z-index: 999999;
-      transform: scale(0);
-      opacity: 1;
-      transition: transform 0.6s cubic-bezier(.65,0,.35,1);
+      z-index: 9999998;
+      animation: trailFade 0.55s ease-out forwards;
     }
-    .theme-wipe.grow { transform: scale(1); }
-    .theme-wipe.fade {
-      transition: opacity 0.4s ease;
+    @keyframes trailFade {
+      0%   { transform: translate(-50%,-50%) scale(1);   opacity: 0.9; }
+      100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.2); opacity: 0; }
+    }
+    .theme-flash {
+      position: fixed; inset: 0;
+      z-index: 9999997;
+      pointer-events: none;
       opacity: 0;
+      animation: flashPulse 0.55s ease-out forwards;
+    }
+    @keyframes flashPulse {
+      0%   { opacity: 0; }
+      25%  { opacity: 0.9; }
+      100% { opacity: 0; }
     }
 
     /* ── HERO ── */
@@ -954,7 +978,6 @@
 
       btn.addEventListener('click', () => {
         const goingLight = root.getAttribute('data-theme') !== 'light';
-        const targetBg = goingLight ? '#f5f4f0' : '#080a0f';
 
         // knob slide + spin flair (preserve the slide position while spinning)
         knob.style.setProperty('--kx', goingLight ? '30px' : '0px');
@@ -962,37 +985,52 @@
         void knob.offsetWidth;
         knob.classList.add('spin');
 
-        // particle burst + circular wipe from the switch's position
         const rect = btn.getBoundingClientRect();
         const x = rect.left + rect.width / 2;
         const y = rect.top + rect.height / 2;
 
         spawnThemeParticles(x, y, goingLight);
 
-        const maxRadius = Math.hypot(
-          Math.max(x, window.innerWidth - x),
-          Math.max(y, window.innerHeight - y)
-        );
+        // flying sun/moon streaking diagonally across the screen with a comet trail
+        const flyer = document.createElement('div');
+        flyer.className = 'theme-flyer';
+        flyer.textContent = goingLight ? '☀️' : '🌙';
+        const fx = -x + window.innerWidth * (goingLight ? 0.75 : 0.15);
+        const fy = window.innerHeight * 0.7;
+        flyer.style.left = x + 'px';
+        flyer.style.top = y + 'px';
+        flyer.style.setProperty('--fx', fx + 'px');
+        flyer.style.setProperty('--fy', -fy + 'px');
+        document.body.appendChild(flyer);
+        setTimeout(() => flyer.remove(), 900);
 
-        const wipe = document.createElement('div');
-        wipe.className = 'theme-wipe';
-        wipe.style.left = x + 'px';
-        wipe.style.top = y + 'px';
-        wipe.style.width = wipe.style.height = (maxRadius * 2) + 'px';
-        wipe.style.marginLeft = -maxRadius + 'px';
-        wipe.style.marginTop = -maxRadius + 'px';
-        wipe.style.background = targetBg;
-        document.body.appendChild(wipe);
+        // comet trail dots following the same diagonal path, staggered
+        for (let i = 1; i <= 6; i++) {
+          setTimeout(() => {
+            const t = document.createElement('div');
+            t.className = 'theme-trail';
+            const frac = i / 9;
+            const size = 10 - i;
+            t.style.left = x + 'px';
+            t.style.top = y + 'px';
+            t.style.width = size + 'px'; t.style.height = size + 'px';
+            t.style.background = goingLight ? '#FFD24D' : '#B0C4FF';
+            t.style.setProperty('--tx', (fx * frac) + 'px');
+            t.style.setProperty('--ty', (-fy * frac) + 'px');
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 600);
+          }, i * 45);
+        }
 
-        requestAnimationFrame(() => wipe.classList.add('grow'));
-
-        wipe.addEventListener('transitionend', function onEnd(e) {
-          if (e.propertyName !== 'transform') return;
-          wipe.removeEventListener('transitionend', onEnd);
-          applyTheme(goingLight);       // swap theme now — same color as overlay, invisible jump
-          wipe.classList.add('fade');
-          setTimeout(() => wipe.remove(), 450);
-        });
+        // quick full-screen flash at the peak of the flight
+        setTimeout(() => {
+          const flash = document.createElement('div');
+          flash.className = 'theme-flash';
+          flash.style.background = goingLight ? '#fff' : '#04060a';
+          document.body.appendChild(flash);
+          applyTheme(goingLight); // swap theme right as the flash peaks — masks the jump
+          setTimeout(() => flash.remove(), 560);
+        }, 380);
       });
     })();
 
