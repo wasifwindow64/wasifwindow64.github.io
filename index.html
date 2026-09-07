@@ -131,7 +131,7 @@
       position: fixed;
       z-index: 100000;
     }
-    .theme-switch.pos-tr { top: 18px; right: 24px; left: auto; bottom: auto; }
+    .theme-switch.pos-tr { top: 78px; right: 24px; left: auto; bottom: auto; }
     .theme-switch.pos-bl { bottom: 18px; left: 24px; top: auto; right: auto; }
     .switch-track {
       position: relative;
@@ -790,16 +790,17 @@
       <li><a href="#about">About</a></li>
       <li><a href="https://wasif-agamer.itch.io" target="_blank">Itch.io</a></li>
     </ul>
-    <button class="theme-switch pos-tr" id="themeToggle" aria-label="Toggle light/dark theme">
-      <span class="switch-track">
-        <span class="switch-star s1"></span>
-        <span class="switch-star s2"></span>
-        <span class="switch-star s3"></span>
-        <span class="switch-cloud"></span>
-        <span class="switch-knob" id="switchKnob">🌙</span>
-      </span>
-    </button>
   </nav>
+
+  <button class="theme-switch pos-tr" id="themeToggle" aria-label="Toggle light/dark theme">
+    <span class="switch-track">
+      <span class="switch-star s1"></span>
+      <span class="switch-star s2"></span>
+      <span class="switch-star s3"></span>
+      <span class="switch-cloud"></span>
+      <span class="switch-knob" id="switchKnob">🌙</span>
+    </span>
+  </button>
 
   <!-- HERO -->
   <section class="hero">
@@ -962,7 +963,7 @@
 
       function cornerStyles(corner) {
         return corner === 'tr'
-          ? { top: '18px', right: '24px', left: 'auto', bottom: 'auto' }
+          ? { top: '78px', right: '24px', left: 'auto', bottom: 'auto' }
           : { bottom: '18px', left: '24px', top: 'auto', right: 'auto' };
       }
 
