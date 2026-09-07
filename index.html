@@ -128,8 +128,11 @@
     .theme-switch {
       background: none; border: none; padding: 0;
       cursor: pointer;
-      margin-left: 1.2rem;
+      position: fixed;
+      z-index: 100000;
     }
+    .theme-switch.pos-tr { top: 18px; right: 24px; left: auto; bottom: auto; }
+    .theme-switch.pos-bl { bottom: 18px; left: 24px; top: auto; right: auto; }
     .switch-track {
       position: relative;
       width: 62px; height: 30px;
@@ -219,42 +222,20 @@
       100% { transform: translate(var(--px),var(--py)) scale(0.2); opacity: 0; }
     }
 
-    /* ── FLYING SUN/MOON TRANSITION ── */
-    .theme-flyer {
+    /* ── CORNER MORPH TRANSITION (grow to fullscreen, land in opposite corner) ── */
+    .theme-morph {
       position: fixed;
-      font-size: 2.4rem;
-      z-index: 9999999;
+      z-index: 999999999;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
       pointer-events: none;
-      filter: drop-shadow(0 0 14px rgba(255,215,0,0.85));
-      animation: flyAcross 0.85s cubic-bezier(.25,.75,.2,1) forwards;
+      transition: width 0.5s cubic-bezier(.4,0,.2,1),
+                  height 0.5s cubic-bezier(.4,0,.2,1),
+                  border-radius 0.5s cubic-bezier(.4,0,.2,1);
     }
-    @keyframes flyAcross {
-      0%   { transform: translate(-50%,-50%) scale(0.5) rotate(0deg);   opacity: 1; }
-      55%  { transform: translate(calc(-50% + var(--fx)*0.65), calc(-50% + var(--fy)*0.65)) scale(1.5) rotate(200deg); opacity: 1; }
-      100% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--fy))) scale(0.4) rotate(380deg); opacity: 0; }
-    }
-    .theme-trail {
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999998;
-      animation: trailFade 0.55s ease-out forwards;
-    }
-    @keyframes trailFade {
-      0%   { transform: translate(-50%,-50%) scale(1);   opacity: 0.9; }
-      100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.2); opacity: 0; }
-    }
-    .theme-flash {
-      position: fixed; inset: 0;
-      z-index: 9999997;
-      pointer-events: none;
-      opacity: 0;
-      animation: flashPulse 0.55s ease-out forwards;
-    }
-    @keyframes flashPulse {
-      0%   { opacity: 0; }
-      25%  { opacity: 0.9; }
-      100% { opacity: 0; }
+    .theme-morph .morph-icon {
+      font-size: 1.4rem;
+      transition: opacity 0.25s ease, transform 0.25s ease;
     }
 
     /* ── HERO ── */
@@ -809,7 +790,7 @@
       <li><a href="#about">About</a></li>
       <li><a href="https://wasif-agamer.itch.io" target="_blank">Itch.io</a></li>
     </ul>
-    <button class="theme-switch" id="themeToggle" aria-label="Toggle light/dark theme">
+    <button class="theme-switch pos-tr" id="themeToggle" aria-label="Toggle light/dark theme">
       <span class="switch-track">
         <span class="switch-star s1"></span>
         <span class="switch-star s2"></span>
@@ -976,61 +957,77 @@
         }
       }
 
+      // where the switch currently lives: 'tr' (top-right) or 'bl' (bottom-left)
+      let currentCorner = 'tr';
+
+      function cornerStyles(corner) {
+        return corner === 'tr'
+          ? { top: '18px', right: '24px', left: 'auto', bottom: 'auto' }
+          : { bottom: '18px', left: '24px', top: 'auto', right: 'auto' };
+      }
+
       btn.addEventListener('click', () => {
         const goingLight = root.getAttribute('data-theme') !== 'light';
-
-        // knob slide + spin flair (preserve the slide position while spinning)
-        knob.style.setProperty('--kx', goingLight ? '30px' : '0px');
-        knob.classList.remove('spin');
-        void knob.offsetWidth;
-        knob.classList.add('spin');
+        const startCorner = currentCorner;
+        const endCorner = startCorner === 'tr' ? 'bl' : 'tr';
+        const targetBg = goingLight ? '#f5f4f0' : '#080a0f';
 
         const rect = btn.getBoundingClientRect();
-        const x = rect.left + rect.width / 2;
-        const y = rect.top + rect.height / 2;
+        btn.style.visibility = 'hidden'; // real button hides; the morph clone takes over visually
 
-        spawnThemeParticles(x, y, goingLight);
+        // build the morph clone at the button's exact spot
+        const morph = document.createElement('div');
+        morph.className = 'theme-morph';
+        Object.assign(morph.style, cornerStyles(startCorner), {
+          width: rect.width + 'px',
+          height: rect.height + 'px',
+          borderRadius: '999px',
+          background: targetBg,
+          transition: 'none'
+        });
+        morph.innerHTML = '<span class="morph-icon">' + (goingLight ? '☀️' : '🌙') + '</span>';
+        document.body.appendChild(morph);
+        void morph.offsetWidth;
 
-        // flying sun/moon streaking diagonally across the screen with a comet trail
-        const flyer = document.createElement('div');
-        flyer.className = 'theme-flyer';
-        flyer.textContent = goingLight ? '☀️' : '🌙';
-        const fx = -x + window.innerWidth * (goingLight ? 0.75 : 0.15);
-        const fy = window.innerHeight * 0.7;
-        flyer.style.left = x + 'px';
-        flyer.style.top = y + 'px';
-        flyer.style.setProperty('--fx', fx + 'px');
-        flyer.style.setProperty('--fy', -fy + 'px');
-        document.body.appendChild(flyer);
-        setTimeout(() => flyer.remove(), 900);
+        // PHASE 1 — grow from the current corner until it covers the whole screen
+        morph.style.transition = 'width 0.5s cubic-bezier(.4,0,.2,1), height 0.5s cubic-bezier(.4,0,.2,1), border-radius 0.5s cubic-bezier(.4,0,.2,1)';
+        const bigSize = (Math.max(window.innerWidth, window.innerHeight) * 2.3) + 'px';
+        requestAnimationFrame(() => {
+          Object.assign(morph.style, { width: bigSize, height: bigSize, borderRadius: '0px' });
+          morph.querySelector('.morph-icon').style.opacity = '0';
+        });
 
-        // comet trail dots following the same diagonal path, staggered
-        for (let i = 1; i <= 6; i++) {
-          setTimeout(() => {
-            const t = document.createElement('div');
-            t.className = 'theme-trail';
-            const frac = i / 9;
-            const size = 10 - i;
-            t.style.left = x + 'px';
-            t.style.top = y + 'px';
-            t.style.width = size + 'px'; t.style.height = size + 'px';
-            t.style.background = goingLight ? '#FFD24D' : '#B0C4FF';
-            t.style.setProperty('--tx', (fx * frac) + 'px');
-            t.style.setProperty('--ty', (-fy * frac) + 'px');
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), 600);
-          }, i * 45);
-        }
+        morph.addEventListener('transitionend', function onGrowEnd(e) {
+          if (e.propertyName !== 'width') return;
+          morph.removeEventListener('transitionend', onGrowEnd);
 
-        // quick full-screen flash at the peak of the flight
-        setTimeout(() => {
-          const flash = document.createElement('div');
-          flash.className = 'theme-flash';
-          flash.style.background = goingLight ? '#fff' : '#04060a';
-          document.body.appendChild(flash);
-          applyTheme(goingLight); // swap theme right as the flash peaks — masks the jump
-          setTimeout(() => flash.remove(), 560);
-        }, 380);
+          // fully covered now — swap the real theme behind it, invisibly
+          applyTheme(goingLight);
+          spawnThemeParticles(window.innerWidth / 2, window.innerHeight / 2, goingLight);
+
+          // jump the anchor to the opposite corner while still fullscreen (still invisible)
+          morph.style.transition = 'none';
+          Object.assign(morph.style, cornerStyles(endCorner));
+          void morph.offsetWidth;
+          morph.style.transition = 'width 0.5s cubic-bezier(.4,0,.2,1), height 0.5s cubic-bezier(.4,0,.2,1), border-radius 0.5s cubic-bezier(.4,0,.2,1)';
+
+          // PHASE 2 — shrink back down, landing in the opposite corner
+          requestAnimationFrame(() => {
+            Object.assign(morph.style, { width: rect.width + 'px', height: rect.height + 'px', borderRadius: '999px' });
+          });
+
+          morph.addEventListener('transitionend', function onShrinkEnd(ev) {
+            if (ev.propertyName !== 'width') return;
+            morph.removeEventListener('transitionend', onShrinkEnd);
+
+            btn.classList.remove('pos-' + startCorner);
+            btn.classList.add('pos-' + endCorner);
+            currentCorner = endCorner;
+            btn.style.visibility = 'visible';
+            spawnThemeParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, goingLight);
+            morph.remove();
+          });
+        });
       });
     })();
 
