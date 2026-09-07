@@ -227,7 +227,7 @@
       position: fixed;
       z-index: 999999999;
       display: flex; align-items: center; justify-content: center;
-      overflow: hidden;
+      overflow: visible;
       pointer-events: none;
       transition: width 0.5s cubic-bezier(.4,0,.2,1),
                   height 0.5s cubic-bezier(.4,0,.2,1),
@@ -235,7 +235,8 @@
     }
     .theme-morph .morph-icon {
       font-size: 1.4rem;
-      transition: opacity 0.25s ease, transform 0.25s ease;
+      display: block;
+      transition: font-size 0.5s cubic-bezier(.4,0,.2,1);
     }
 
     /* ── HERO ── */
@@ -923,6 +924,8 @@
       if (saved === 'light') {
         root.setAttribute('data-theme', 'light');
         knob.textContent = '☀️';
+        btn.classList.remove('pos-tr');
+        btn.classList.add('pos-bl');
       }
 
       function applyTheme(isLight) {
@@ -958,9 +961,6 @@
         }
       }
 
-      // where the switch currently lives: 'tr' (top-right) or 'bl' (bottom-left)
-      let currentCorner = 'tr';
-
       function cornerStyles(corner) {
         return corner === 'tr'
           ? { top: '78px', right: '24px', left: 'auto', bottom: 'auto' }
@@ -969,8 +969,9 @@
 
       btn.addEventListener('click', () => {
         const goingLight = root.getAttribute('data-theme') !== 'light';
-        const startCorner = currentCorner;
-        const endCorner = startCorner === 'tr' ? 'bl' : 'tr';
+        // moon always parks top-right (dark), sun always parks bottom-left (light) — always
+        const startCorner = goingLight ? 'tr' : 'bl';
+        const endCorner   = goingLight ? 'bl' : 'tr';
         const targetBg = goingLight ? '#f5f4f0' : '#080a0f';
 
         const rect = btn.getBoundingClientRect();
@@ -990,12 +991,16 @@
         document.body.appendChild(morph);
         void morph.offsetWidth;
 
-        // PHASE 1 — grow from the current corner until it covers the whole screen
+        const icon = morph.querySelector('.morph-icon');
+        const bigIconSize = (Math.min(window.innerWidth, window.innerHeight) * 0.55) + 'px';
+
+        // PHASE 1 — grow from the current corner until it covers the whole screen;
+        // the sun/moon itself grows along with it, staying visible the whole time
         morph.style.transition = 'width 0.5s cubic-bezier(.4,0,.2,1), height 0.5s cubic-bezier(.4,0,.2,1), border-radius 0.5s cubic-bezier(.4,0,.2,1)';
         const bigSize = (Math.max(window.innerWidth, window.innerHeight) * 2.3) + 'px';
         requestAnimationFrame(() => {
           Object.assign(morph.style, { width: bigSize, height: bigSize, borderRadius: '0px' });
-          morph.querySelector('.morph-icon').style.opacity = '0';
+          icon.style.fontSize = bigIconSize;
         });
 
         morph.addEventListener('transitionend', function onGrowEnd(e) {
@@ -1012,9 +1017,10 @@
           void morph.offsetWidth;
           morph.style.transition = 'width 0.5s cubic-bezier(.4,0,.2,1), height 0.5s cubic-bezier(.4,0,.2,1), border-radius 0.5s cubic-bezier(.4,0,.2,1)';
 
-          // PHASE 2 — shrink back down, landing in the opposite corner
+          // PHASE 2 — shrink back down, landing in the opposite corner; icon shrinks back too
           requestAnimationFrame(() => {
             Object.assign(morph.style, { width: rect.width + 'px', height: rect.height + 'px', borderRadius: '999px' });
+            icon.style.fontSize = '1.4rem';
           });
 
           morph.addEventListener('transitionend', function onShrinkEnd(ev) {
@@ -1023,7 +1029,6 @@
 
             btn.classList.remove('pos-' + startCorner);
             btn.classList.add('pos-' + endCorner);
-            currentCorner = endCorner;
             btn.style.visibility = 'visible';
             spawnThemeParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, goingLight);
             morph.remove();
