@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K83RC7TSWB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K83RC7TSWB');
+  </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="google-site-verification" content="TwmqjgKdUSkHBQ5hti_DQufIr0WJfWVJlYo6DTkyBr4" />
@@ -461,6 +470,33 @@
       border-top: 1px solid var(--border);
       position: relative; z-index: 1;
     }
+    #contact {
+      padding: 5rem 1.5rem;
+      max-width: 700px;
+      margin: 0 auto;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      position: relative; z-index: 1;
+    }
+    #contact p {
+      color: var(--muted); font-size: 1.05rem; font-weight: 500;
+      max-width: 480px; margin: 0 auto 1.8rem;
+    }
+    .contact-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .contact-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 1.6rem;
+      border-radius: 8px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; font-size: 1rem;
+      color: #fff; text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .contact-btn:hover { transform: translateY(-3px); }
+    .contact-mail { background: var(--mc-green); }
+    .contact-mail:hover { box-shadow: 0 10px 25px rgba(93,158,58,0.35); }
+    .contact-itch { background: var(--fire); }
+    .contact-itch:hover { box-shadow: 0 10px 25px rgba(255,69,0,0.35); }
     .about-inner {
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 4rem; align-items: center;
@@ -787,6 +823,7 @@
     <ul class="nav-links">
       <li><a href="#games">Games</a></li>
       <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
       <li><a href="https://wasif-agamer.itch.io" target="_blank">Itch.io</a></li>
     </ul>
   </nav>
@@ -901,6 +938,17 @@
         <div class="stat-box reveal"><span class="stat-num">∞</span><div class="stat-lbl">Replayability</div></div>
         <div class="stat-box reveal"><span class="stat-num">+</span><div class="stat-lbl">More Coming Soon</div></div>
       </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <p class="section-label">// CONTACT</p>
+    <h2 class="section-title">Get In Touch</h2>
+    <p>Found a bug, got feedback, or just want to say hi? Reach out however's easiest.</p>
+    <div class="contact-actions">
+      <a class="contact-btn contact-mail" href="mailto:wasifwindow64@gmail.com">✉️ Email Me</a>
+      <a class="contact-btn contact-itch" href="https://wasif-agamer.itch.io" target="_blank">💬 Message on Itch.io</a>
     </div>
   </section>
 
@@ -1143,15 +1191,15 @@
       dino: {
         title: 'Dino Blitz — Screenshots',
         images: [
-          { src: 'screenshot-dino-action.png', alt: 'Dino Blitz — dodging an obstacle mid-run' },
-          { src: 'screenshot-dino-bird.png',   alt: 'Dino Blitz — the dino meets the Wasif Flap bird' },
-          { src: 'screenshot-dino-start.png',  alt: 'Dino Blitz — start screen' }
+          { src: 'screenshot-dino-action.jpg', alt: 'Dino Blitz — dodging an obstacle mid-run' },
+          { src: 'screenshot-dino-bird.jpg',   alt: 'Dino Blitz — the dino meets the Wasif Flap bird' },
+          { src: 'screenshot-dino-start.jpg',  alt: 'Dino Blitz — start screen' }
         ]
       },
       flap: {
         title: 'Wasif Flap — Screenshots',
         images: [
-          { src: 'screenshot-flap-action.png', alt: 'Wasif Flap — threading a narrow pipe gap' }
+          { src: 'screenshot-flap-action.jpg', alt: 'Wasif Flap — threading a narrow pipe gap' }
         ]
       }
     };
