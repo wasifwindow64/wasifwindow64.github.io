@@ -952,7 +952,9 @@
       <a class="contact-btn contact-mail" href="mailto:wasifwindow64@gmail.com">✉️ Email Me</a>
       <a class="contact-btn contact-itch" href="https://wasif-agamer.itch.io" target="_blank">💬 Message on Itch.io</a>
     </div>
-    <p style="margin-top:1.2rem; font-size:0.9rem;">or copy: <span style="color:var(--text); user-select:all;">wasifwindow64@gmail.com</span></p>
+    <button id="copyEmailBtn" style="margin-top:1.2rem; background:none; border:1px dashed var(--border); color:var(--muted); padding:0.5rem 1rem; border-radius:6px; font-family:'Rajdhani',sans-serif; font-size:0.9rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem;">
+      📋 <span id="copyEmailText">wasifwindow64@gmail.com</span>
+    </button>
   </section>
 
   <!-- FOOTER -->
@@ -1188,6 +1190,25 @@
       entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
     }, {threshold:0.1});
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    // COPY EMAIL TO CLIPBOARD
+    const copyBtn = document.getElementById('copyEmailBtn');
+    const copyText = document.getElementById('copyEmailText');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText('wasifwindow64@gmail.com').then(() => {
+          const original = copyText.textContent;
+          copyText.textContent = 'Copied! Paste it in your email app';
+          copyBtn.style.borderColor = 'var(--mc-green)';
+          copyBtn.style.color = 'var(--mc-green)';
+          setTimeout(() => {
+            copyText.textContent = original;
+            copyBtn.style.borderColor = '';
+            copyBtn.style.color = '';
+          }, 2000);
+        });
+      });
+    }
 
     // SCROLL SPY — highlight the nav link for whichever section is in view
     const spySections = document.querySelectorAll('#games, #about, #contact');
