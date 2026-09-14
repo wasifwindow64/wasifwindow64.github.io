@@ -811,32 +811,106 @@
       background: var(--surface);
       border: 2px solid var(--border);
       border-radius: 12px;
-      padding: 1.5rem;
-      display: flex; align-items: center; gap: 1.5rem;
+      padding: 1.8rem;
+      display: flex; align-items: center; gap: 1.6rem;
       flex-wrap: wrap;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
       transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
+    .cert-card::before {
+      content: '';
+      position: absolute; inset: -40%;
+      background: radial-gradient(circle, rgba(255,215,0,0.12) 0%, transparent 65%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
     .cert-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-6px);
       border-color: var(--gold);
-      box-shadow: 0 15px 40px rgba(255,215,0,0.15);
+      box-shadow: 0 20px 50px rgba(255,215,0,0.2);
     }
-    .cert-img {
-      width: 220px; max-width: 100%;
-      border-radius: 8px;
-      border: 2px solid var(--gold);
+    .cert-card:hover::before { opacity: 1; }
+    .cert-badge {
+      width: 72px; height: 72px; flex-shrink: 0;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at 35% 30%, #FFEA9E, #FFD700 55%, #B8860B 100%);
+      box-shadow: 0 0 25px rgba(255,215,0,0.5), inset 0 2px 4px rgba(255,255,255,0.6);
+      animation: cert-glow 2.4s ease-in-out infinite;
     }
+    .cert-badge svg { width: 34px; height: 34px; color: #4a3200; }
+    @keyframes cert-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.4), inset 0 2px 4px rgba(255,255,255,0.6); }
+      50%      { box-shadow: 0 0 34px rgba(255,215,0,0.7), inset 0 2px 4px rgba(255,255,255,0.6); }
+    }
+    .cert-info { flex: 1; min-width: 180px; }
     .cert-name {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       letter-spacing: 0.05em;
       color: var(--white);
     }
     .cert-desc {
       color: var(--muted);
       font-weight: 600;
-      margin-top: 0.3rem;
+      margin-top: 0.2rem;
     }
+    .cert-view-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem; letter-spacing: 0.1em;
+      color: #1a1c22;
+      background: linear-gradient(90deg, #FFD700, #FFF3B0, #FFD700);
+      background-size: 200% auto;
+      padding: 0.65rem 1.4rem;
+      border-radius: 6px;
+      animation: shimmer 3s linear infinite;
+      white-space: nowrap;
+    }
+
+    /* ── CERTIFICATE LIGHTBOX ── */
+    .cert-modal {
+      position: fixed; inset: 0;
+      background: rgba(8,10,15,0.94);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 999998;
+      padding: 2rem;
+    }
+    .cert-modal.open { display: flex; }
+    .cert-modal-box {
+      position: relative;
+      max-width: 640px; width: 100%;
+      transform: scale(0.85);
+      opacity: 0;
+      transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.3s ease;
+    }
+    .cert-modal.open .cert-modal-box {
+      transform: scale(1);
+      opacity: 1;
+    }
+    .cert-modal-box img {
+      width: 100%;
+      border-radius: 10px;
+      border: 3px solid var(--gold);
+      box-shadow: 0 0 60px rgba(255,215,0,0.35), 0 30px 80px rgba(0,0,0,0.6);
+      display: block;
+    }
+    .cert-modal-close {
+      position: absolute; top: -18px; right: -18px;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: #1a1c22;
+      color: var(--gold);
+      font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .cert-modal-close:hover { transform: scale(1.1) rotate(90deg); background: var(--fire); color: #fff; }
   </style>
 </head>
 <body>
@@ -987,14 +1061,25 @@
   <section id="certifications">
     <p class="section-label">// CERTIFICATIONS</p>
     <h2 class="section-title">Achievements</h2>
-    <div class="cert-card reveal">
-      <img src="certificate-basic-computer.jpg" alt="Basic Computer Course Certificate" class="cert-img">
+    <div class="cert-card reveal" id="certCardTrigger">
+      <div class="cert-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg>
+      </div>
       <div class="cert-info">
         <div class="cert-name">Basic Computer Course</div>
         <div class="cert-desc">Completed with a score of 44/50 — BasicComputerCourse.in</div>
       </div>
+      <span class="cert-view-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> View Certificate</span>
     </div>
   </section>
+
+  <!-- CERTIFICATE LIGHTBOX -->
+  <div class="cert-modal" id="certModal" aria-hidden="true">
+    <div class="cert-modal-box">
+      <button class="cert-modal-close" id="certModalClose" aria-label="Close">✕</button>
+      <img src="certificate-basic-computer.jpg" alt="Basic Computer Course Certificate">
+    </div>
+  </div>
 
   <!-- CONTACT -->
   <section id="contact">
@@ -1336,6 +1421,26 @@
       if (e.key === 'Escape') closeShots();
       if (e.key === 'ArrowLeft')  shotsPrev.click();
       if (e.key === 'ArrowRight') shotsNext.click();
+    });
+
+    // CERTIFICATE LIGHTBOX
+    const certCard  = document.getElementById('certCardTrigger');
+    const certModal = document.getElementById('certModal');
+    const certClose = document.getElementById('certModalClose');
+
+    function openCert() {
+      certModal.classList.add('open');
+      certModal.setAttribute('aria-hidden', 'false');
+    }
+    function closeCert() {
+      certModal.classList.remove('open');
+      certModal.setAttribute('aria-hidden', 'true');
+    }
+    if (certCard) certCard.addEventListener('click', openCert);
+    certClose.addEventListener('click', closeCert);
+    certModal.addEventListener('click', e => { if (e.target === certModal) closeCert(); });
+    document.addEventListener('keydown', e => {
+      if (certModal.classList.contains('open') && e.key === 'Escape') closeCert();
     });
   </script>
 
