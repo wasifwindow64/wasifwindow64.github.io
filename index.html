@@ -1443,6 +1443,131 @@
       if (certModal.classList.contains('open') && e.key === 'Escape') closeCert();
     });
   </script>
+<!-- ===== Wasif Calendar Widget =====
+     index.html mein </body> se just pehle paste karein. Bas itna hi. -->
+<style>
+  .wcal { position: fixed; right: 14px; bottom: 14px; z-index: 800; font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif; }
 
+  /* Chota, halka button: hover/focus par hi clear hota hai */
+  .wcal-btn {
+    width: 36px; height: 36px; padding: 0; display: grid; place-items: center;
+    background: rgba(21, 17, 13, .85); color: #ff7a3d;
+    border: 2px solid #ff5a1f; border-radius: 0; cursor: pointer;
+    box-shadow: 2px 2px 0 #3f9b2a; opacity: .5;
+    transition: opacity .2s ease;
+  }
+  .wcal-btn:hover, .wcal-btn:focus-visible, .wcal-btn[aria-expanded="true"] { opacity: 1; }
+  .wcal-btn:focus-visible, .wcal-nav:focus-visible { outline: 2px solid #5ac23a; outline-offset: 2px; }
+  .wcal-btn svg { width: 18px; height: 18px; }
+
+  .wcal-panel {
+    position: absolute; right: 0; bottom: 46px;
+    width: min(264px, calc(100vw - 28px));
+    background: #15110d; color: #f3e9df;
+    border: 2px solid #ff5a1f; box-shadow: 4px 4px 0 #3f9b2a;
+    padding: 10px 10px 8px;
+    transform-origin: bottom right;
+    animation: wcal-open .14s ease-out;
+  }
+  .wcal-panel[hidden] { display: none; }
+  @keyframes wcal-open { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }
+
+  .wcal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .wcal-title { font-size: 22px; letter-spacing: .06em; line-height: 1; }
+  .wcal-nav {
+    width: 28px; height: 28px; padding: 0; display: grid; place-items: center;
+    background: transparent; color: #5ac23a; border: 2px solid #3f9b2a; border-radius: 0;
+    cursor: pointer; font: inherit; font-size: 16px; line-height: 1;
+  }
+  .wcal-nav:hover:not(:disabled) { background: #3f9b2a; color: #15110d; }
+  .wcal-nav:disabled { opacity: .3; cursor: default; }
+
+  .wcal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+  .wcal-dow { font-size: 14px; color: #9a8f85; padding: 2px 0 4px; }
+  .wcal-day { font-size: 17px; line-height: 1; padding: 6px 0 5px; }
+  .wcal-day.is-today { background: #ff5a1f; color: #1a0e07; }
+
+  .wcal-foot { display: flex; justify-content: space-between; margin-top: 8px; padding-top: 6px; border-top: 2px solid #2a221b; font-size: 13px; letter-spacing: .04em; color: #9a8f85; }
+
+  @media (prefers-reduced-motion: reduce) { .wcal-panel { animation: none; } .wcal-btn { transition: none; } }
+</style>
+
+<div class="wcal" id="wcal">
+  <div class="wcal-panel" id="wcal-panel" role="dialog" aria-label="Calendar 2026" hidden>
+    <div class="wcal-head">
+      <button class="wcal-nav" id="wcal-prev" type="button" aria-label="Previous month">&#9664;</button>
+      <div class="wcal-title" id="wcal-title" aria-live="polite"></div>
+      <button class="wcal-nav" id="wcal-next" type="button" aria-label="Next month">&#9654;</button>
+    </div>
+    <div class="wcal-grid" id="wcal-grid"></div>
+    <div class="wcal-foot"><span>2026 (1447-1448)</span><span>Created By: M.Wasif</span></div>
+  </div>
+  <button class="wcal-btn" id="wcal-btn" type="button" aria-expanded="false" aria-controls="wcal-panel" aria-label="Open calendar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="16"/><path d="M3 10h18M8 3v4M16 3v4"/>
+    </svg>
+  </button>
+</div>
+
+<script>
+(function () {
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var DOW = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  var YEAR = 2026;
+
+  var btn = document.getElementById('wcal-btn');
+  var panel = document.getElementById('wcal-panel');
+  var root = document.getElementById('wcal');
+  var title = document.getElementById('wcal-title');
+  var grid = document.getElementById('wcal-grid');
+  var prev = document.getElementById('wcal-prev');
+  var next = document.getElementById('wcal-next');
+
+  var now = new Date();
+  var month = now.getFullYear() === YEAR ? now.getMonth() : 0;
+
+  function cell(cls, text) {
+    var el = document.createElement('div');
+    el.className = cls;
+    if (text !== undefined) el.textContent = text;
+    return el;
+  }
+
+  function render() {
+    title.textContent = MONTHS[month] + ' ' + YEAR;
+    grid.textContent = '';
+    DOW.forEach(function (d) { grid.appendChild(cell('wcal-dow', d)); });
+
+    var offset = new Date(YEAR, month, 1).getDay();
+    var total = new Date(YEAR, month + 1, 0).getDate();
+    for (var i = 0; i < offset; i++) grid.appendChild(cell('wcal-day'));
+
+    for (var d = 1; d <= total; d++) {
+      var isToday = now.getFullYear() === YEAR && now.getMonth() === month && now.getDate() === d;
+      var el = cell('wcal-day' + (isToday ? ' is-today' : ''), d);
+      if (isToday) el.setAttribute('aria-current', 'date');
+      grid.appendChild(el);
+    }
+    prev.disabled = month === 0;
+    next.disabled = month === 11;
+  }
+
+  function setOpen(open) {
+    panel.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+  }
+
+  btn.addEventListener('click', function () { setOpen(panel.hidden); });
+  prev.addEventListener('click', function () { if (month > 0) { month--; render(); } });
+  next.addEventListener('click', function () { if (month < 11) { month++; render(); } });
+  document.addEventListener('click', function (e) { if (!root.contains(e.target)) setOpen(false); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !panel.hidden) { setOpen(false); btn.focus(); }
+  });
+
+  render();
+})();
+</script>
+<!-- ===== End Calendar Widget ===== -->
 </body>
 </html>
