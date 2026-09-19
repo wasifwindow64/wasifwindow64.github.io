@@ -1487,7 +1487,8 @@
   .wcal-day { font-size: 17px; line-height: 1; padding: 6px 0 5px; }
   .wcal-day.is-today { background: #ff5a1f; color: #1a0e07; }
 
-  .wcal-foot { display: flex; justify-content: space-between; margin-top: 8px; padding-top: 6px; border-top: 2px solid #2a221b; font-size: 13px; letter-spacing: .04em; color: #9a8f85; }
+  .wcal-foot span { white-space: nowrap; }
+  .wcal-foot { display: flex; justify-content: space-between; gap: 8px; margin-top: 8px; padding-top: 6px; border-top: 2px solid #2a221b; font-size: 13px; letter-spacing: .04em; color: #9a8f85; }
 
   @media (prefers-reduced-motion: reduce) { .wcal-panel { animation: none; } .wcal-btn { transition: none; } }
 </style>
