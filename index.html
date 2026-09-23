@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-K83RC7TSWB"></script>
@@ -60,6 +60,35 @@
     }
     html[data-theme="light"] nav {
       background: rgba(255,255,255,0.92);
+      box-shadow: 0 2px 16px rgba(20,20,30,0.06);
+    }
+
+    /* loading screen should match the light theme too, not flash dark */
+    html[data-theme="light"] #loader {
+      background: var(--bg);
+    }
+    html[data-theme="light"] .loader-bar-wrap,
+    html[data-theme="light"] .ld-bar-wrap {
+      background: rgba(20,20,30,0.08);
+      border-color: rgba(232,66,10,0.25);
+    }
+
+    /* give flat elements a bit of depth against the light background */
+    html[data-theme="light"] .game-card,
+    html[data-theme="light"] .stat-box,
+    html[data-theme="light"] .contact-form,
+    html[data-theme="light"] .contact-itch {
+      box-shadow: 0 4px 18px rgba(20,20,30,0.06);
+    }
+    html[data-theme="light"] .game-thumb.dino,
+    html[data-theme="light"] .game-thumb.flap {
+      background: radial-gradient(ellipse at center, #eef0e8 0%, #e2e5da 100%);
+    }
+    /* keep body text comfortably dark, and links legible on white */
+    html[data-theme="light"] body { color: var(--text); }
+    html[data-theme="light"] ::selection {
+      background: rgba(232,66,10,0.18);
+      color: var(--text);
     }
 
     html { scroll-behavior: smooth; }
@@ -950,7 +979,7 @@
       <span class="switch-star s2"></span>
       <span class="switch-star s3"></span>
       <span class="switch-cloud"></span>
-      <span class="switch-knob" id="switchKnob">🌙</span>
+      <span class="switch-knob" id="switchKnob">☀️</span>
     </span>
   </button>
 
@@ -1107,12 +1136,13 @@
       const knob = document.getElementById('switchKnob');
       const saved = localStorage.getItem('wasif-theme');
 
-      if (saved === 'light') {
-        root.setAttribute('data-theme', 'light');
-        knob.textContent = '☀️';
-        btn.classList.remove('pos-tr');
-        btn.classList.add('pos-bl');
-      }
+      // Site always OPENS in light — even if the visitor picked dark
+      // on a previous visit. Toggle still works for this session.
+      root.setAttribute('data-theme', 'light');
+      knob.textContent = '☀️';
+      btn.classList.remove('pos-bl');
+      btn.classList.add('pos-tr');
+      localStorage.setItem('wasif-theme', 'light');
 
       function applyTheme(isLight) {
         if (isLight) {
@@ -1155,9 +1185,10 @@
 
       btn.addEventListener('click', () => {
         const goingLight = root.getAttribute('data-theme') !== 'light';
-        // moon always parks top-right (dark), sun always parks bottom-left (light) — always
-        const startCorner = goingLight ? 'tr' : 'bl';
-        const endCorner   = goingLight ? 'bl' : 'tr';
+        // read the button's ACTUAL current corner (don't assume), and land on
+        // the corner that matches the new scheme: light → top-right, dark → bottom-left
+        const startCorner = btn.classList.contains('pos-tr') ? 'tr' : 'bl';
+        const endCorner   = goingLight ? 'tr' : 'bl';
         const targetBg = goingLight ? '#f5f4f0' : '#080a0f';
 
         const rect = btn.getBoundingClientRect();
